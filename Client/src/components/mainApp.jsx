@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Home from './home'
 import Login from './login/login'
 import SupporterDetails from './userDetails/supporterDetails'
-import BereavedDetails from './userDetails/bereavedDetails'
+// import BereavedDetails from './userDetails/bereavedDetails'
 // import UserDetails from './userDetails/userDetails'
 // import UserDetails from './userDetails/userDetails'
 import BereavedDetails from "./userDetails/BereavedDetails" 

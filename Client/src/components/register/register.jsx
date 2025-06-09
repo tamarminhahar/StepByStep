@@ -120,7 +120,6 @@ export default function Register() {
 
     // Function to check if the username already exists
     const checkUserExists = async (user_name) => {
-        debugger
         try {
             const response = await fetch(`http://localhost:3000/users/${user_name}`, {
                 method: 'GET',
@@ -162,7 +161,7 @@ if (response.status === 404) {
                         name: nameRef.current.value,
                         email: emailRef.current.value,
                         password: passwordVerRef.current.value,
-                        role: roleRef.current.value,
+                        role: roleRef.current.value.toLowerCase(),
 
                     };
 console.log('New user data:', newUser);
@@ -195,7 +194,7 @@ console.log('New user data:', newUser);
                         const savedUser = await response.json();
                         localStorage.setItem('currentUser', JSON.stringify(savedUser));
 
-                        if (newUser.role === 'Supporter') {
+                        if (newUser.role === 'supporter') {
                             navigate('/supporterDetails');
                         } else if (newUser.role === 'bereaved') {
                             navigate('/bereavedDetails');
@@ -228,7 +227,7 @@ console.log('New user data:', newUser);
                 <input className={styles.input} ref={passwordVerRef} type="password" placeholder="verify password" required />
                 <select className={styles.input} ref={roleRef} required>
                     <option value="bereaved">Bereaved</option>
-                    <option value="Supporter">Supporter</option>
+                    <option value="supporter">Supporter</option>
                     <option value="admin">Admin</option>
                 </select>
                 <div className={styles.alert} ref={alertDivRef}></div>
