@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 
 import Home from './home'
 import Login from './login/login'
+import SupporterDetails from './userDetails/supporterDetails'
+import BereavedDetails from './userDetails/bereavedDetails'
+// import UserDetails from './userDetails/userDetails'
 // import UserDetails from './userDetails/userDetails'
 import BereavedDetails from "./userDetails/BereavedDetails" 
 // import Comments from './comments/comments'
@@ -18,7 +21,11 @@ function MainApp() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* <Route path='/userDetails' element={(localStorage.getItem('currentUser')) ? <Login /> : <UserDetails />} /> */}
+        {/* <Route path='/userDetails' element={(localStorage.getItem('currentUser')) ? <Login /> : <UserDetails />} /> */}
         <Route path='/home' element={(currentUser.id != -1) ? <Home /> : <NoPage />} />
+        <Route path='/supporterDetails' element={<SupporterDetails />} />
+        <Route path='/bereavedDetails' element={<BereavedDetails />} />
+        
         {/* <Route path="/users/:userId/posts/:postId/comments" element={currentUser.id !== -1 ? <Comments /> : <Navigate to="/login" />} />
         <Route path={`/users/${currentUser.id}/todos`} element={<TodoList />} />
         <Route path={`/users/${currentUser.id}/posts/*`} element={<PostList />} />

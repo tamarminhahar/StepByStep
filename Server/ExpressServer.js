@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 import express from 'express';
 import { connectToDatabase } from '../DB/dbConnection.js';
@@ -14,6 +14,7 @@ app.use(cors({
     origin: 'http://localhost:5173'
   }));
 app.use(express.json());
+
 app.use((req, res, next) => {
     req.db = db;
     next();

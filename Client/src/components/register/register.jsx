@@ -119,17 +119,20 @@ export default function Register() {
     };
 
     // Function to check if the username already exists
-    const checkUserExists = async (username) => {
+    const checkUserExists = async (user_name) => {
+        debugger
         try {
-            const response = await fetch(`http://localhost:3000/users/${username}`, {
+            const response = await fetch(`http://localhost:3000/users/${user_name}`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
+if (response.status === 404) {
+      return false; // המשתמש לא קיים
+    }
 
-            if (response.status === 404) {
-                return false; // User does not exist
-            }
-
+    if (response.status === 409) {
+      return true;
+    }
             if (!response.ok) {
                 throw new Error('Failed to check user existence');
             }
@@ -160,25 +163,55 @@ export default function Register() {
                         email: emailRef.current.value,
                         password: passwordVerRef.current.value,
                         role: roleRef.current.value,
-                    };
 
-                    fetch('http://localhost:3000/users/', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(newUser),
+                    };
+console.log('New user data:', newUser);
+            //         fetch('http://localhost:3000/users/', {
+            //             method: 'POST',
+            //             headers: { 'Content-Type': 'application/json' },
+            //             body: JSON.stringify(newUser),
+            //         })
+            //             .then(async(response) => {
+            //                 if (!response.ok) throw new Error(`Error: ${response.status}`);
+            //                 navigate('/login');
+            //             })
+            //             .catch((err) => {
+            //                 setError(err.message);
+            //             });
+            //     } else {
+            //         manageMessages('You have to use the same password. Please recheck!');
+            //         passwordVerRef.current.value = '';
+            //     }
+            // }
+             fetch('http://localhost:3000/users/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                   
+                    body: JSON.stringify(newUser),
+                })
+                    .then(async (response) => {
+                        if (!response.ok) throw new Error(`Error: ${response.status}`);
+
+                        const savedUser = await response.json();
+                        localStorage.setItem('currentUser', JSON.stringify(savedUser));
+
+                        if (newUser.role === 'Supporter') {
+                            navigate('/supporterDetails');
+                        } else if (newUser.role === 'bereaved') {
+                            navigate('/bereavedDetails');
+                        } else {
+                            navigate('/home');
+                        }
                     })
-                        .then((response) => {
-                            if (!response.ok) throw new Error(`Error: ${response.status}`);
-                            navigate('/login');
-                        })
-                        .catch((err) => {
-                            setError(err.message);
-                        });
-                } else {
-                    manageMessages('You have to use the same password. Please recheck!');
-                    passwordVerRef.current.value = '';
-                }
+                    .catch((err) => {
+                        setError(err.message);
+                        console.log('Error during registration:', err);
+                    });
+            } else {
+                manageMessages('You have to use the same password. Please recheck!');
+                passwordVerRef.current.value = '';
             }
+        }
         });
     };
 
