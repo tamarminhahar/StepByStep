@@ -49,7 +49,7 @@ async function initDatabase() {
     CREATE TABLE supporter_profile (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,
-      supporter ENUM('Social Worker', 'Psychologist', 'Bereaved Person (at least 10 years)') NOT NULL,
+      profession_type  ENUM('Social Worker', 'Psychologist', 'Bereaved Person (at least 10 years)') NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 

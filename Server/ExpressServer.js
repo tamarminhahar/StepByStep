@@ -5,7 +5,7 @@ import cors from 'cors';
 import db from '../DB/dbConnection.js';
 import UserRouter from './Routes/Users.js';
 import PostRouter from './Routes/Posts.js';
-
+// import ProfileRouter from './Routes/Profiles.js';
 const app = express();
 const port = 3000;
 

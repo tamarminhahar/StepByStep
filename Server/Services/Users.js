@@ -20,19 +20,6 @@ export async function getUserWithPasswordByName(userName) {
 }
 
 
-// export async function addUser(userData) {
-//     try {
-        
-//         const { name, email } = userData;
-//         const [result] = await db.query(`
-//             INSERT INTO users (name, email)
-//             VALUES (?, ?)
-//         `, [name, email]);
-//         return result.insertId;
-//     } catch (err) {
-//         throw err;
-//     }
-// }
 export async function addUser(userData) {
     try {
         const { name, email, role, password_hash } = userData;
@@ -46,19 +33,7 @@ export async function addUser(userData) {
     }
 }
 
-// export async function addPassword({ user_id, password_hash }) {
-//   try {
 
-//     const [result] = await db.execute(`
-//       INSERT INTO passwords (user_id, password_hash)
-//       VALUES (?, ?)
-//     `, [user_id, password_hash]);
-
-//     return result.insertId;
-//   } catch (err) {
-//     throw err;
-//   }
-// }
 
 
 const JWT_SECRET = "your_super_secret_key"; // כדאי בהמשך להעביר ל־process.env
@@ -92,4 +67,22 @@ export async function loginUser(name, password) {
         console.error(error);
         throw error;
     }
+}
+
+export async function addBereavedProfile({ user_id, date_of_loss, relationship_to_deceased }) {
+    const [result] = await db.query(
+        `INSERT INTO bereaved_profile (user_id, date_of_loss, relationship_to_deceased)
+         VALUES (?, ?, ?)`,
+        [user_id, date_of_loss, relationship_to_deceased]
+    );
+    return result.insertId;
+}
+
+export async function addSupporterProfile({ user_id, profession_type }) {
+    const [result] = await db.query(
+        `INSERT INTO supporter_profile (user_id, profession_type)
+         VALUES (?, ?)`,
+        [user_id, profession_type]
+    );
+    return result.insertId;
 }

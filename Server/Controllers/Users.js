@@ -1,29 +1,13 @@
 
- import {getUserWithPasswordByName, addUser ,loginUser} from '../Services/Users.js';
+ import {getUserWithPasswordByName, addUser ,loginUser,addBereavedProfile,addSupporterProfile} from '../Services/Users.js';
 import bcrypt from 'bcrypt';
 
 
-// export const addUserTo = async (req, res) => {
-//   try {
-//     const { username, email, password } = req.body;
-//     const newUserId = await addUser({ name: username, email });
-//     await addPassword({ user_id: newUserId, hashed_password: password });
 
-//     res.status(201).json({ id: newUserId });
-//   } catch (err) {
-//     console.error('Error adding user:', err);
-//     res.status(500).json({ message: 'Error adding user' });
-//   }
-// };
 
 export const addUserTo = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
-
-    // const newUserId = await addUser({ name: name, email:email, role:role });
-
-    // const hashedPassword = await bcrypt.hash(password, 10);
-    // await addPassword({ user_id: newUserId, password_hash: hashedPassword });
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -68,5 +52,25 @@ export async function loginUserTo(req, res) {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export async function createBereavedProfile(req, res) {
+    try {
+        const id = await addBereavedProfile(req.body);
+        res.status(201).json({ id });
+    } catch (err) {
+        console.error('Error adding bereaved profile:', err);
+        res.status(500).json({ message: 'Error adding profile' });
+    }
+}
+
+export async function createSupporterProfile(req, res) {
+    try {
+        const id = await addSupporterProfile(req.body);
+        res.status(201).json({ id });
+    } catch (err) {
+        console.error('Error adding supporter profile:', err);
+        res.status(500).json({ message: 'Error adding profile' });
     }
 }
