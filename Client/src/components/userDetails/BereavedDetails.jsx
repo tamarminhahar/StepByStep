@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation  } from 'react-router-dom';
 import styles from './userDetails.module.css'; // You can reuse the same CSS
+
 
 // Bereaved Profile Form
 const BereavedDetails = () => {
@@ -9,11 +10,13 @@ const BereavedDetails = () => {
     const alertDivRef = useRef();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const location = useLocation();
+
 
     // Get current user from localStorage
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const token = localStorage.getItem('token');
-
+    // const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    // const token = localStorage.getItem('token');
+    const { newUser } = location.state || {};
     // Function to display message in the alert div
     const manageMessages = (message) => {
         alertDivRef.current.innerText = message;
@@ -28,18 +31,34 @@ const BereavedDetails = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/bereaved_profile', {
+            const userResponse  = await fetch('http://localhost:3000/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, // Send JWT token
-                },
+                
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': `Bearer ${token}`, // Send JWT token
+            //     },
+              headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newUser),
+            });
+
+            if (!userResponse.ok) throw new Error(`Error: ${userResponse.status}`);
+            const { id } = await userResponse.json();
+
+            const body = {
+                user_id: id,
+                date_of_loss: dateOfLossRef.current.value,
+                relationship_to_deceased: relationshipRef.current.value,
+            };
+
+            const profileResponse = await fetch('http://localhost:3000/bereaved_profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
 
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
+            if (!profileResponse.ok) throw new Error(`Error: ${response.status}`);
 
-            // Navigate to home page after success
             navigate('/home');
         } catch (err) {
             setError(err.message);

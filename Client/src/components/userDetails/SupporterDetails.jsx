@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,useLocation } from 'react-router-dom';
 import styles from './userDetails.module.css'; // You can reuse the same CSS
 
 // Supporter Profile Form
@@ -8,10 +8,13 @@ const SupporterDetails = () => {
     const alertDivRef = useRef();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+        const location = useLocation();
+
 
     // Get current user from localStorage
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     const token = localStorage.getItem('token');
+    
 
     // Function to display message in the alert div
     const manageMessages = (message) => {
@@ -26,16 +29,36 @@ const SupporterDetails = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/supporter_profile', {
+            const userResponse  = await fetch('http://localhost:3000/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, // Send JWT token
-                },
+                // headers: {
+                //     'Content-Type': 'application/json',
+                //     'Authorization': `Bearer ${token}`, // Send JWT token
+                // },
+                // body: JSON.stringify(body),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newUser),
+            });
+
+            if (!userResponse.ok) throw new Error(`Error: ${userResponse.status}`);
+            const { id } = await userResponse.json();
+
+            const body = {
+                user_id: id,
+                Supporter: supporterTypeRef.current.value,
+            };
+
+            const profileResponse = await fetch('http://localhost:3000/supporter_profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
 
             if (!response.ok) throw new Error(`Error: ${response.status}`);
+            if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
+            // });
+
+            // if (!response.ok) throw new Error(`Error: ${response.status}`);
 
             // Navigate to home page after success
             navigate('/home');

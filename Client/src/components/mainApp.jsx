@@ -21,8 +21,6 @@ function MainApp() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* <Route path='/userDetails' element={(localStorage.getItem('currentUser')) ? <Login /> : <UserDetails />} /> */}
-        {/* <Route path='/userDetails' element={(localStorage.getItem('currentUser')) ? <Login /> : <UserDetails />} /> */}
         <Route path='/home' element={(currentUser.id != -1) ? <Home /> : <NoPage />} />
         <Route path='/supporterDetails' element={<SupporterDetails />} />
         {/* <Route path='/bereavedDetails' element={<BereavedDetails />} /> */}
