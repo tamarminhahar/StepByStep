@@ -10,7 +10,7 @@ const router = express.Router();
 // Post routes
 router.get('/', PostController.getPosts);
 router.post('/', PostController.createPost);
-router.get('/:postId', PostController.getPostById);
+// router.get('/:postId', PostController.getPostById);
 router.delete('/:postId', PostController.deletePost);
 
 // Nested routes - Comments

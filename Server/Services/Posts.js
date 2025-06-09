@@ -23,12 +23,12 @@ export async function addPost(userId, title, body, media_url, grief_tag) {
     return result.insertId;
 }
 
-export async function getPostById(postId) {
-    const [rows] = await db.query(`
-        SELECT * FROM posts WHERE id = ?
-    `, [postId]);
-    return rows[0];
-}
+// export async function getPostById(postId) {
+//     const [rows] = await db.query(`
+//         SELECT * FROM posts WHERE id = ?
+//     `, [postId]);
+//     return rows[0];
+// }
 
 export async function deletePost(postId, userId) {
     const [result] = await db.query(`

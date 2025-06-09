@@ -55,18 +55,36 @@ export async function getUserByNameTo(req, res) {
     }
 };
 
+// export async function loginUserTo(req, res) {
+//     try {
+//         const { name, password } = req.body;
+//         const token = await loginUser(name, password);
+
+//         if (!token) {
+//             return res.status(401).json({ message: 'Invalid username or password' });
+//         }
+//         res.json({ token });
+
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// }
+//   export async function loginUserTo(req, res) {
+//       const { name, password } = req.body;
+//       const token = await loginUser(name, password);
+//       if (!token) {
+//           return res.status(401).json({ message: 'Invalid username or password' });
+//       }
+//       res.json({ token });}
+
 export async function loginUserTo(req, res) {
-    try {
-        const { name, password } = req.body;
-        const token = await loginUser(name, password);
+    const { name, password } = req.body;
+    const token = await loginUser(name, password);
 
-        if (!token) {
-            return res.status(401).json({ message: 'Invalid username or password' });
-        }
-        res.json({ token });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+    if (!token) {
+        return res.status(401).json({ message: 'Invalid username or password' });
     }
+
+    res.json({ token });
 }

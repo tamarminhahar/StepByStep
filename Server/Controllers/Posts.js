@@ -8,18 +8,23 @@ import * as postService from '../Services/Posts.js';
  }
 
 export async function createPost(req, res) {
-    const { title, body, media_url, grief_tag } = req.body;
-    const postId = await postService.addPost(req.user.id, title, body, media_url, grief_tag);
+    // const { title, body, media_url, grief_tag } = req.body;
+    // const postId = await postService.addPost(req.user.id, title, body, media_url, grief_tag);
+    const { user_id, title, body, media_url, grief_tag } = req.body;
+const postId = await postService.addPost(user_id, title, body, media_url, grief_tag);
+
     res.status(201).json({ id: postId });
 }
 
-export async function getPostById(req, res) {
-    const post = await postService.getPostById(req.params.postId);
-    res.json(post);
-}
+// export async function getPostById(req, res) {
+//     const post = await postService.getPostById(req.params.postId);
+//     res.json(post);
+// }
 
 export async function deletePost(req, res) {
-    const success = await postService.deletePost(req.params.postId, req.user.id);
+       const userId = req.query.user_id; 
+    const success = await postService.deletePost(req.params.postId, userId);
+    // const success = await postService.deletePost(req.params.postId, req.user.id);
     res.json({ success });
 }
 

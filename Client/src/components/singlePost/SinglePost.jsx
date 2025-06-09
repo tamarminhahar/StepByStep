@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Comments from '../comments/Comments';
+import Comments from '../comments/Comments.jsx';
 
 const SinglePost = ({ post, onDelete }) => {
   const [showComments, setShowComments] = useState(false);
