@@ -1,9 +1,7 @@
-<<<<<<< HEAD
- import {getUserWithPasswordByName, addUser ,addPassword,loginUser} from '../Services/Users.js';
-=======
+
  import {getUserWithPasswordByName, addUser ,loginUser} from '../Services/Users.js';
 import bcrypt from 'bcrypt';
->>>>>>> 82b10301f5f9ce5ae9e7b60bf97fa68f7fcf3646
+
 
 // export const addUserTo = async (req, res) => {
 //   try {

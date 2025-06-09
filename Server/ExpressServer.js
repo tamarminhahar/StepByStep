@@ -1,15 +1,15 @@
 // import dotenv from 'dotenv';
 // dotenv.config();
-
 import express from 'express';
-import { connectToDatabase } from '../DB/dbConnection.js';
+import cors from 'cors';
+import db from '../DB/dbConnection.js';
 import UserRouter from './Routes/Users.js';
 import PostRouter from './Routes/Posts.js';
 
 const app = express();
 const port = 3000;
 
-const db = await connectToDatabase();
+// const db = await connectToDatabase();
 app.use(cors({
     origin: 'http://localhost:5173'
   }));
@@ -21,8 +21,6 @@ app.use((req, res, next) => {
 });
 app.use('/posts', PostRouter);  
 app.use('/users', UserRouter);
-
-import cors from 'cors';
 
 
 
