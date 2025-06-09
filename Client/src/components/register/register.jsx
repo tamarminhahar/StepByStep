@@ -65,30 +65,7 @@ if (response.status === 404) {
                         role: roleRef.current.value.toLowerCase(),
 
                     };
-            //  fetch('http://localhost:3000/users/', {
-            //         method: 'POST',
-            //         headers: { 'Content-Type': 'application/json' },
-                   
-            //         body: JSON.stringify(newUser),
-            //     })
-            //         .then(async (response) => {
-            //             if (!response.ok) throw new Error(`Error: ${response.status}`);
-
-            //             const savedUser = await response.json();
-            //             localStorage.setItem('currentUser', JSON.stringify(savedUser));
-
-            //             if (newUser.role === 'supporter') {
-            //                 navigate('/supporterDetails');
-            //             } else if (newUser.role === 'bereaved') {
-            //                 navigate('/bereavedDetails');
-            //             } else {
-            //                 navigate('/home');
-            //             }
-            //         })
-            //         .catch((err) => {
-            //             setError(err.message);
-            //             console.log('Error during registration:', err);
-            //         });
+           
             const path =
                         roleRef.current.value === 'bereaved'
                             ? '/bereavedDetails'

@@ -11,11 +11,6 @@ const BereavedDetails = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const location = useLocation();
-
-
-    // Get current user from localStorage
-    // const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    // const token = localStorage.getItem('token');
     const { newUser } = location.state || {};
     // Function to display message in the alert div
     const manageMessages = (message) => {
@@ -24,20 +19,11 @@ const BereavedDetails = () => {
 
     // Function to send the bereaved profile to server
     const writeProfileToDB = async () => {
-        const body = {
-            user_id: currentUser.id,
-            date_of_loss: dateOfLossRef.current.value,
-            relationship_to_deceased: relationshipRef.current.value,
-        };
+      
 
         try {
-            const userResponse  = await fetch('http://localhost:3000/', {
+            const userResponse  = await fetch('http://localhost:3000/users', {
                 method: 'POST',
-                
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': `Bearer ${token}`, // Send JWT token
-            //     },
               headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newUser),
             });
@@ -51,13 +37,15 @@ const BereavedDetails = () => {
                 relationship_to_deceased: relationshipRef.current.value,
             };
 
-            const profileResponse = await fetch('http://localhost:3000/bereaved_profile', {
+            const profileResponse = await fetch('http://localhost:3000/users/bereaved_profile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
 
-            if (!profileResponse.ok) throw new Error(`Error: ${response.status}`);
+            if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
+
+            localStorage.setItem('currentUser', JSON.stringify({id: id,name: newUser.name,email: newUser.email}));
 
             navigate('/home');
         } catch (err) {

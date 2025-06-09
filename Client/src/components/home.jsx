@@ -7,7 +7,7 @@ export default function Home() {
     return (
         <>
             <Nav />
-            <h1>Welcome, {currentUser.username||currentUser.name}</h1>
+            <h1>Welcome: {currentUser.name}</h1>
         </>
     );
 }

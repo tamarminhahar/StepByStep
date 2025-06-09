@@ -9,12 +9,9 @@ const SupporterDetails = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
         const location = useLocation();
+        const { newUser } = location.state || {};
 
 
-    // Get current user from localStorage
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const token = localStorage.getItem('token');
-    
 
     // Function to display message in the alert div
     const manageMessages = (message) => {
@@ -23,19 +20,10 @@ const SupporterDetails = () => {
 
     // Function to send the supporter profile to server
     const writeProfileToDB = async () => {
-        const body = {
-            user_id: currentUser.id,
-            Supporter: supporterTypeRef.current.value,
-        };
 
         try {
-            const userResponse  = await fetch('http://localhost:3000/', {
+            const userResponse  = await fetch('http://localhost:3000/users', {
                 method: 'POST',
-                // headers: {
-                //     'Content-Type': 'application/json',
-                //     'Authorization': `Bearer ${token}`, // Send JWT token
-                // },
-                // body: JSON.stringify(body),
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newUser),
             });
@@ -48,19 +36,15 @@ const SupporterDetails = () => {
                 Supporter: supporterTypeRef.current.value,
             };
 
-            const profileResponse = await fetch('http://localhost:3000/supporter_profile', {
+            const profileResponse = await fetch('http://localhost:3000/users/supporter_profile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body),
             });
 
-            if (!response.ok) throw new Error(`Error: ${response.status}`);
             if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
-            // });
+            localStorage.setItem('currentUser', JSON.stringify({id: id,name: newUser.name,email: newUser.email}));
 
-            // if (!response.ok) throw new Error(`Error: ${response.status}`);
-
-            // Navigate to home page after success
             navigate('/home');
         } catch (err) {
             setError(err.message);
