@@ -1,6 +1,6 @@
 import db from '../../DB/dbConnection.js';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 
 export const getUserByName = async (name) => {
     const [rows] = await db.execute('SELECT * FROM users WHERE name = ?', [name]);
@@ -77,17 +77,17 @@ export async function loginUser(name, password) {
             return null;
         }
         
-        const token = jwt.sign(
-            {
-                id: user.id,
-                name: user.user_name,
-                email: user.email,
-                role: user.role,
-            },
-            JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-        return token;
+        // const token = jwt.sign(
+        //     {
+        //         id: user.id,
+        //         name: user.user_name,
+        //         email: user.email,
+        //         role: user.role,
+        //     },
+        //     JWT_SECRET,
+        //     { expiresIn: '1h' }
+        // );
+        // return token;
 
     } catch (error) {
         console.error(error);

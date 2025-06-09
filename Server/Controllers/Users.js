@@ -1,4 +1,4 @@
- import {getUserWithPasswordByName, addUser ,addPassword,loginUser} from '../Service/Users.js';
+ import {getUserWithPasswordByName, addUser ,addPassword,loginUser} from '../Services/Users.js';
 
 // export const addUserTo = async (req, res) => {
 //   try {
