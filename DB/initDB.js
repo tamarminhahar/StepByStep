@@ -12,7 +12,7 @@ await dbCon.query(`SET FOREIGN_KEY_CHECKS = 0;`);
 
 await dbCon.query(`DROP TABLE IF EXISTS mentor_profiles;`);
 await dbCon.query(`DROP TABLE IF EXISTS bereaved_profile;`);
-await dbCon.query(`DROP TABLE IF EXISTS Supporter_profile;`);
+await dbCon.query(`DROP TABLE IF EXISTS supporter_profile;`);
 await dbCon.query(`DROP TABLE IF EXISTS users;`);
 
 await dbCon.query(`SET FOREIGN_KEY_CHECKS = 1;`);
@@ -56,7 +56,7 @@ CREATE TABLE users (
   user_name VARCHAR(20) UNIQUE NOT NULL,
   email VARCHAR(20) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('bereaved', 'Supporter', 'admin') NOT NULL
+  role ENUM('bereaved', 'supporter', 'admin') NOT NULL
 );
 
 CREATE TABLE bereaved_profile (
