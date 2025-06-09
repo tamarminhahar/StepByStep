@@ -88,30 +88,50 @@ export async function addUser(userData) {
 // }
 import { generateToken } from '../Middlewares/auth.js';
 
+// export async function loginUser(name, password) {
+//     try {
+//         const [rows] = await db.execute(
+//             "SELECT * FROM users WHERE user_name = ?",
+//             [name]
+//         );
+
+//         const user = rows[0];
+
+//         if (!user) {
+//             return null;
+//         }
+
+//         const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+
+//         if (!isPasswordValid) {
+//             return null;
+//         }
+
+//         // יוצרים token
+//         const token = generateToken(user);
+
+//         return token;
+
+//     } catch (error) {
+//         console.error(error);
+//         throw error;
+//     }
+// }
+
+// loginUser without JWT
 export async function loginUser(name, password) {
     try {
         const [rows] = await db.execute(
             "SELECT * FROM users WHERE user_name = ?",
             [name]
         );
-
         const user = rows[0];
+        if (!user) return null;
+        // const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        // if (!isPasswordValid) return null;
 
-        if (!user) {
-            return null;
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-
-        if (!isPasswordValid) {
-            return null;
-        }
-
-        // יוצרים token
-        const token = generateToken(user);
-
-        return token;
-
+        // Return user info instead of creating a token
+        return user
     } catch (error) {
         console.error(error);
         throw error;

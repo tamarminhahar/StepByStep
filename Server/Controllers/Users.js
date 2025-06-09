@@ -62,16 +62,25 @@ export async function getUserByNameTo(req, res) {
 //       }
 //       res.json({ token });}
 
+// export async function loginUserTo(req, res) {
+//     const { name, password } = req.body;
+//     const token = await loginUser(name, password);
+
+//     if (!token) {
+//         return res.status(401).json({ message: 'Invalid username or password' });
+//     }
+
+//     res.json({ token });
+// }
 export async function loginUserTo(req, res) {
     const { name, password } = req.body;
-    const token = await loginUser(name, password);
-
-    if (!token) {
+    const user = await loginUser(name, password);
+    if (!user) {
         return res.status(401).json({ message: 'Invalid username or password' });
     }
-
-    res.json({ token });
+    res.json({ user });
 }
+
 
 export async function createBereavedProfile(req, res) {
     try {
