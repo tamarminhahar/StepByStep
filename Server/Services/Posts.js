@@ -2,14 +2,19 @@
 
 import db from '../../DB/dbConnection.js';
 
-// Posts
-export async function getPostsByUser(userId) {
+ export async function getPostsByUser(userId) {
+     const [rows] = await db.query(`
+         SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC
+     `, [userId]);
+     return rows;
+ }
+
+ export async function getAllPosts() {
     const [rows] = await db.query(`
-        SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC
-    `, [userId]);
+        SELECT * FROM posts ORDER BY created_at DESC
+    `);
     return rows;
 }
-
 export async function addPost(userId, title, body, media_url, grief_tag) {
     const [result] = await db.query(`
         INSERT INTO posts (user_id, title, body, media_url, grief_tag)
