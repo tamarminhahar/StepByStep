@@ -18,6 +18,7 @@ export const addUserTo = async (req, res) => {
             role: role
         });
     res.status(201).json({ id: newUserId });
+    
   } catch (err) {
     console.error('Error adding user:', err);
     res.status(500).json({ message: 'Error adding user' });
