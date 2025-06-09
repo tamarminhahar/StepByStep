@@ -121,11 +121,11 @@ export default function Login() {
             }
 
             const data = await response.json();
-            return { ok: true, token: data.token };
+            return { ok: true };
 
         } catch (error) {
             console.error(error);
-            return { ok: false, token: null };
+            return { ok: false};
         }
     };
 

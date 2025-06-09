@@ -1,4 +1,5 @@
- import {getUserWithPasswordByName, addUser ,addPassword,loginUser} from '../Service/Users.js';
+ import {getUserWithPasswordByName, addUser ,loginUser} from '../Services/Users.js';
+import bcrypt from 'bcrypt';
 
 // export const addUserTo = async (req, res) => {
 //   try {
@@ -15,13 +16,21 @@
 
 export const addUserTo = async (req, res) => {
   try {
-    const { username, email, password, role } = req.body;
+    const { name, email, password, role } = req.body;
 
-    const newUserId = await addUser({ name: username, email, role });
+    // const newUserId = await addUser({ name: name, email:email, role:role });
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await addPassword({ user_id: newUserId, hashed_password: hashedPassword });
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    // await addPassword({ user_id: newUserId, password_hash: hashedPassword });
 
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUserId = await addUser({ 
+            name: name, 
+            email: email, 
+            password_hash: hashedPassword,
+            role: role
+        });
     res.status(201).json({ id: newUserId });
   } catch (err) {
     console.error('Error adding user:', err);
@@ -31,7 +40,7 @@ export const addUserTo = async (req, res) => {
 
 export async function getUserByNameTo(req, res) {
     const { name } = req.params;
-
+    console.log(name);
     try {
         const user = await getUserWithPasswordByName(name);
         if (!user) {

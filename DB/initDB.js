@@ -1,21 +1,27 @@
-import { connectToDatabase } from './dbConnection.js';
+// import { connectToDatabase } from './dbConnection.js';
+import db from './dbConnection.js';
+
 
 async function initDatabase() {
-  const con = await connectToDatabase();
 
-  await con.query(`CREATE DATABASE IF NOT EXISTS grief_support;`);
 
-  await con.end();
+  await db.query(`CREATE DATABASE IF NOT EXISTS grief_support;`);
 
-  const dbCon = await connectToDatabase('user_system');
+  // await db.end();
 
-  await dbCon.query(
-    `CREATE TABLE users (
+  await db.query(`USE grief_support;`);
+
+  await db.query(`
+      DROP TABLE IF EXISTS bereaved_profile;
+  DROP TABLE IF EXISTS supporter_profile;
+  DROP TABLE IF EXISTS users;
+     
+    CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_name VARCHAR(20)UNIQUE NOT NULL,
   email VARCHAR(20) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('bereaved', 'Supporter', 'admin') NOT NULL,
+  role ENUM('bereaved', 'supporter', 'admin') NOT NULL
 );
 
 CREATE TABLE bereaved_profile (
@@ -35,7 +41,7 @@ CREATE TABLE Supporter_profile (
   );
 
   console.log('Tables created!');
-  await dbCon.end();
+  await db.end();
 }
 
 initDatabase();
