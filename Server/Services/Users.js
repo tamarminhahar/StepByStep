@@ -1,7 +1,7 @@
 import db from '../../DB/dbConnection.js';
 import bcrypt from 'bcrypt';
 // import jwt from 'jsonwebtoken';
-import { generateToken } from '../Middlewares/auth.js';
+// import { generateToken } from '../Middlewares/auth.js';
 
 export const getUserByName = async (name) => {
     const [rows] = await db.execute('SELECT * FROM users WHERE name = ?', [name]);
@@ -39,21 +39,24 @@ export async function addUser(userData) {
 export async function loginUser(name, password) {
     try {
         const [rows] = await db.execute(
-            "SELECT * FROM users WHERE user_name = ?",
-            [name]
+            'SELECT * FROM users WHERE user_name = ?',
+        [name]
         );
         const user = rows[0];
         if (!user) return null;
     
-        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-        if (!isPasswordValid) return null;
+        // const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        // if (!isPasswordValid) return null;
 
-        // Create JWT token
-        const token = generateToken(user);
+        // // Create JWT token
+        // const token = generateToken(user);
 
         // Return token and user info
-        return { token, user };
-        // return user
+        // return { token, user };
+       const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+        if (!isPasswordValid) return null;
+
+         return user
     } catch (error) {
         console.error(error);
         throw error;

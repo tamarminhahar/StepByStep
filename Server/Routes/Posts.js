@@ -1,11 +1,13 @@
 import express from 'express';
+import { authenticateJWT } from '../Middlewares/auth.js';
+
 // import authenticateJWT from '../Middlewares/authenticateJWT.js'; // Adjust the path as necessary
 import * as PostController from '../Controllers/Posts.js'; // Capital P
 
 const router = express.Router();
 
 // Use authenticateJWT for all /posts routes
-// router.use(authenticateJWT);
+ router.use(authenticateJWT);
 
 // Post routes
 router.get('/', PostController.getPosts);

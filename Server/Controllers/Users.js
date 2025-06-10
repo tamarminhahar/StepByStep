@@ -1,7 +1,7 @@
 
  import {getUserWithPasswordByName, addUser ,loginUser,addBereavedProfile,addSupporterProfile} from '../Services/Users.js';
 import bcrypt from 'bcrypt';
-
+import { generateToken } from '../Middlewares/auth.js';
 
 
 
@@ -9,15 +9,25 @@ export const addUserTo = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+    //     const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUserId = await addUser({ 
-            name: name, 
-            email: email, 
-            password_hash: hashedPassword,
-            role: role
-        });
-    res.status(201).json({ id: newUserId });
+    //     const newUserId = await addUser({ 
+    //         name: name, 
+    //         email: email, 
+    //         password_hash: hashedPassword,
+    //         role: role
+    //     });
+    // res.status(201).json({ id: newUserId });
+      const hashedPassword = await bcrypt.hash(password, 10);
+    const newUserId = await addUser({
+      name,
+      email,
+      password_hash: hashedPassword,
+      role,
+    });
+    // Return a token so the client can be logged in immediately after register
+    const token = generateToken({ id: newUserId, user_name: name, role });
+    res.status(201).json({ id: newUserId, token });
     
   } catch (err) {
     console.error('Error adding user:', err);
@@ -47,16 +57,13 @@ export async function loginUserTo(req, res) {
     //     return res.status(401).json({ message: 'Invalid username or password' });
     // }
     // res.json({ user });
-       const result = await loginUser(name, password);
+    const user = await loginUser(name, password);
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid username or password' });
+  }
+  const token = generateToken(user);
+  res.json({ token });
 
-    if (!result) {
-        return res.status(401).json({ message: 'Invalid username or password' });
-    }
-
-    const { token, user } = result;
-
-    // Return token and user info to client
-    res.json({ token, user });
 }
 
 

@@ -1,5 +1,5 @@
-// import dotenv from 'dotenv';
-// dotenv.config();
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import db from '../DB/dbConnection.js';
@@ -8,7 +8,7 @@ import PostRouter from './Routes/Posts.js';
 import CommentRouter from './Routes/Comments.js';
 // import ProfileRouter from './Routes/Profiles.js';
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // const db = await connectToDatabase();
 app.use(cors({
