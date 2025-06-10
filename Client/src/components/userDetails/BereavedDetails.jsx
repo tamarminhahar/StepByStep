@@ -45,7 +45,7 @@ const BereavedDetails = () => {
 
             if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
 
-           const currentUser = { name: newUser.name };
+           const currentUser = { name: newUser.name ,id:newUser.user_id};
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             setCurrentUser(currentUser);
 

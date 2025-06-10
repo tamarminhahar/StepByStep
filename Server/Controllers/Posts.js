@@ -12,7 +12,9 @@ export async function createPost(req, res) {
     const { user_id, title, body, media_url, grief_tag } = req.body;
 const postId = await postService.addPost(user_id, title, body, media_url, grief_tag);
 
-    res.status(201).json({ id: postId });
+const posts = await postService.getPostsByUser(user_id);
+const addedPost = posts.find(p => p.id === postId);
+res.status(201).json(addedPost);
 }
 
 // export async function getPostById(req, res) {
@@ -20,13 +22,44 @@ const postId = await postService.addPost(user_id, title, body, media_url, grief_
 //     res.json(post);
 // }
 
+// export async function deletePost(req, res) {
+//        const userId = req.query.user_id; 
+//     const success = await postService.deletePost(req.params.postId, userId);
+//     res.json({ success });
+// }
+
 export async function deletePost(req, res) {
-       const userId = req.query.user_id; 
-    const success = await postService.deletePost(req.params.postId, userId);
-    // const success = await postService.deletePost(req.params.postId, req.user.id);
-    res.json({ success });
+    try {
+        const userId = req.query.user_id;
+        if (!userId) {
+            return res.status(400).json({ error: 'user_id is required' });
+        }
+
+        const success = await postService.deletePost(req.params.postId, userId);
+
+        if (!success) {
+            return res.status(403).json({ error: 'Unauthorized to delete this post' });
+        }
+
+        res.json({ success });
+    } catch (err) {
+        console.error('Error deleting post:', err);
+        res.status(500).json({ error: 'Failed to delete post' });
+    }
 }
 
+export async function updatePost(req, res) {
+    const { title, body, user_id } = req.body;
+    const postId = req.params.postId;
+
+    try {
+        const updatedPost = await postService.updatePost(postId, user_id, title, body);
+        res.json(updatedPost);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update post' });
+    }
+}
 
 
 

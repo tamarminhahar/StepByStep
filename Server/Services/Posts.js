@@ -35,6 +35,15 @@ export async function deletePost(postId, userId) {
     return result.affectedRows > 0;
 }
 
+export async function updatePost(postId, userId, title, body) {
+    await db.query(`
+        UPDATE posts SET title = ?, body = ? WHERE id = ? AND user_id = ?
+    `, [title, body, postId, userId]);
+
+    const [rows] = await db.query(`SELECT * FROM posts WHERE id = ?`, [postId]);
+    return rows[0];
+}
+
 
 // Likes
 export async function addLikeToPost(postId, userId) {

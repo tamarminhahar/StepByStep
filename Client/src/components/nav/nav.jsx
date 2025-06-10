@@ -14,7 +14,6 @@ function Nav() {
         <nav className={styles.nav}>
             <button onClick={() => navigate('/home')} className={styles.navButton}>Home</button>
             <button onClick={() => navigate(`/info`)} className={styles.navButton}>Info</button>
-            <button onClick={() => navigate(`/users/${currentUser.id}/todos`)} className={styles.navButton}>Todos</button>
             <button onClick={() => navigate(`/users/${currentUser.id}/posts`)} className={styles.navButton}>Posts</button>
             <button onClick={() => navigate('/Calendar')} className={styles.navButton}>Calendar</button>
 

@@ -9,14 +9,13 @@ console.log('env vars:', {
 });
 const db = await mysql.createPool({
 
-    host:'127.0.0.1',
-    user:  'root',
-    password: process.env.DB_PASSWORD || 'chavak1017',
-    database:'grief_support', 
+     host:process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD ,
+     database: process.env.DB_NAME, 
     multipleStatements: true 
   });
-
-  
+ 
   console.log(`Connected to database$`);
 
 export default db;
