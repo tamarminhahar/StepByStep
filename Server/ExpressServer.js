@@ -1,5 +1,4 @@
-// import dotenv from 'dotenv';
-// dotenv.config();
+import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import db from '../DB/dbConnection.js';
@@ -7,10 +6,11 @@ import UserRouter from './Routes/Users.js';
 import PostRouter from './Routes/Posts.js';
 import CommentRouter from './Routes/Comments.js';
 // import ProfileRouter from './Routes/Profiles.js';
-const app = express();
-const port = 3000;
+dotenv.config();
 
-// const db = await connectToDatabase();
+const app = express();
+dotenv.config();
+const port = process.env.PORT ;
 app.use(cors({
     origin: 'http://localhost:5173'
   }));

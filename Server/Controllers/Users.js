@@ -76,6 +76,7 @@ export async function getUserByNameTo(req, res) {
 export async function loginUserTo(req, res) {
     const { name, password } = req.body;
     const user = await loginUser(name, password);
+
     if (!user) {
         return res.status(401).json({ message: 'Invalid username or password' });
     }
