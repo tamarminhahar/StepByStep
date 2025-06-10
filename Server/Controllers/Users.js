@@ -27,7 +27,7 @@ export const addUserTo = async (req, res) => {
     });
     // Return a token so the client can be logged in immediately after register
     const token = generateToken({ id: newUserId, user_name: name, role });
-    res.status(201).json({ id: newUserId, token });
+    res.status(201).json({ id: newUserId, token, role });
     
   } catch (err) {
     console.error('Error adding user:', err);
@@ -58,18 +58,26 @@ export async function loginUserTo(req, res) {
     // }
     // res.json({ user });
     const user = await loginUser(name, password);
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid username or password' });
-  }
-  const token = generateToken(user);
-  res.json({ token });
+     if (!user) {
+        return res.status(401).json({ message: 'Invalid username or password' });
+    }
+    const token = generateToken(user);
+    const { password_hash, ...safeUser } = user;
+    res.json({ token, user: { id: safeUser.id, role: safeUser.role, user_name: safeUser.user_name } });
+
 
 }
 
 
 export async function createBereavedProfile(req, res) {
     try {
-        const id = await addBereavedProfile(req.body);
+        // const id = await addBereavedProfile(req.body);
+          const { date_of_loss, relationship_to_deceased } = req.body;
+        const id = await addBereavedProfile({
+            user_id: req.user.id,
+            date_of_loss,
+            relationship_to_deceased,
+        });
         res.status(201).json({ id });
     } catch (err) {
         console.error('Error adding bereaved profile:', err);
@@ -79,7 +87,12 @@ export async function createBereavedProfile(req, res) {
 
 export async function createSupporterProfile(req, res) {
     try {
-        const id = await addSupporterProfile(req.body);
+        // const id = await addSupporterProfile(req.body);
+         const { profession_type } = req.body;
+        const id = await addSupporterProfile({
+            user_id: req.user.id,
+            profession_type,
+        });
         res.status(201).json({ id });
     } catch (err) {
         console.error('Error adding supporter profile:', err);

@@ -5,13 +5,15 @@ export function generateToken(user) {
     const payload = {
         id: user.id,
         user_name: user.user_name,
-        role: user.role
+        role: user.role,
     };
 
-    const secret = process.env.JWT_SECRET || 'your_jwt_secret'; // סוד להצפנה - רצוי לשים ב־.env
-    const options = {
-        expiresIn: '1h' // פג תוקף אחרי שעה
-    };
+    // const secret = process.env.JWT_SECRET || 'your_jwt_secret'; // סוד להצפנה - רצוי לשים ב־.env
+    // const options = {
+    //     expiresIn: '1h' // פג תוקף אחרי שעה
+    // };
+    const secret = process.env.JWT_SECRET || 'your_jwt_secret';
+    const options = { expiresIn: '1h' };
 
     return jwt.sign(payload, secret, options);
 }

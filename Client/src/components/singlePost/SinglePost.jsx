@@ -5,7 +5,7 @@ const SinglePost = ({ post, onDelete }) => {
   const [showComments, setShowComments] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(post.likes || 0);
-//   const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
   const handleDelete = () => {
     fetch(`http://localhost:3000/posts/${post.id}`, {

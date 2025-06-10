@@ -25,27 +25,35 @@ const BereavedDetails = () => {
             const userResponse  = await fetch('http://localhost:3000/users', {
                 method: 'POST',
               headers: { 'Content-Type': 'application/json' },
+              
                 body: JSON.stringify(newUser),
             });
 
             if (!userResponse.ok) throw new Error(`Error: ${userResponse.status}`);
-            const { id } = await userResponse.json();
+            // const { id } = await userResponse.json();
+             const { id, token, role } = await userResponse.json();
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
 
             const body = {
-                user_id: id,
+              //  user_id: id,
                 date_of_loss: dateOfLossRef.current.value,
                 relationship_to_deceased: relationshipRef.current.value,
             };
 
             const profileResponse = await fetch('http://localhost:3000/users/bereaved_profile', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(body),
             });
 
             if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
 
-           const currentUser = { name: newUser.name };
+        //    const currentUser = { name: newUser.name };
+                  const currentUser = { id, name: newUser.name, role };
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             setCurrentUser(currentUser);
 
@@ -54,6 +62,13 @@ const BereavedDetails = () => {
             setError(err.message);
         }
     };
+React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('userRole');
+    if (!token || role !== 'bereaved') {
+        navigate('/home');
+    }
+}, [navigate]);
 
     // Submit handler for the profile form
     const handleDetailsSubmit = (event) => {

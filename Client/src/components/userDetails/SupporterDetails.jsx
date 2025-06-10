@@ -31,21 +31,31 @@ const SupporterDetails = () => {
             });
 
             if (!userResponse.ok) throw new Error(`Error: ${userResponse.status}`);
-            const { id } = await userResponse.json();
+            // const { id } = await userResponse.json();
+                  const { id, token, role } = await userResponse.json();
+            localStorage.setItem('token', token);
+            localStorage.setItem('role', role);
 
             const body = {
-                user_id: id,
-                Supporter: supporterTypeRef.current.value,
+                // user_id: id,
+                // Supporter: supporterTypeRef.current.value,
+                 profession_type: supporterTypeRef.current.value,
             };
 
             const profileResponse = await fetch('http://localhost:3000/users/supporter_profile', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                // headers: { 'Content-Type': 'application/json' },
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(body),
             });
 
             if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
-           const currentUser = { name: newUser.name,};
+        //    const currentUser = { name: newUser.name,};
+         const currentUser = { id, name: newUser.name, role };
+
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             setCurrentUser(currentUser);
             navigate('/home');

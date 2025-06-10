@@ -9,7 +9,11 @@ const PostsList = () => {
   const [error, setError] = useState(null);
 debugger
   useEffect(() => {
-    fetch('http://localhost:3000/posts')
+    // fetch('http://localhost:3000/posts')
+       const token = localStorage.getItem('token');
+    fetch('http://localhost:3000/posts', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => setPosts(data))
       .catch(err => setError(err.message));

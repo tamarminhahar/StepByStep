@@ -117,11 +117,13 @@ export default function Login() {
             });
 
             if (!response.ok) {
-                return { ok: false, token: null };
+                                return { ok: false };
+
             }
 
             const data = await response.json();
-            return { ok: true };
+           return { ok: true, token: data.token, user: data.user };
+
 
         } catch (error) {
             console.error(error);
@@ -138,6 +140,8 @@ export default function Login() {
             } else {
                 // Save JWT token to localStorage
                 localStorage.setItem('token', result.token);
+                  localStorage.setItem('role', result.user.role);
+                localStorage.setItem('currentUser', JSON.stringify({ id: result.user.id, name: result.user.user_name, role: result.user.role }));
 
                 // Navigate to home page
                 navigate('/home');
