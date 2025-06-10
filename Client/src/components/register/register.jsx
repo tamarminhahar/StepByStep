@@ -26,7 +26,7 @@ export default function Register() {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             });
-if (response.status === 404) {
+    if (response.status === 404) {
       return false; // המשתמש לא קיים
     }
 
@@ -65,13 +65,15 @@ if (response.status === 404) {
                         role: roleRef.current.value.toLowerCase(),
 
                     };
-           
+                
+                            //   localStorage.setItem('pendingUser', JSON.stringify(newUser));
+      
             const path =
                         roleRef.current.value === 'bereaved'
                             ? '/bereavedDetails'
                             : '/supporterDetails';
 
-                    navigate(path, { state: { newUser } });
+                    navigate(path, { state: { newUser} });
             } else {
                 manageMessages('You have to use the same password. Please recheck!');
                 passwordVerRef.current.value = '';

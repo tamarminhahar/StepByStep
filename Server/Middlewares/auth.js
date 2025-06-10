@@ -1,5 +1,3 @@
-// Middlewares/auth.js
-
 import jwt from 'jsonwebtoken';
 
 // הפונקציה הזו יוצרת token עבור המשתמש (תחזיר אותו ל־client אחרי login)
@@ -7,13 +5,15 @@ export function generateToken(user) {
     const payload = {
         id: user.id,
         user_name: user.user_name,
-        role: user.role
+        role: user.role,
     };
 
-    const secret = process.env.JWT_SECRET || 'your_jwt_secret'; // סוד להצפנה - רצוי לשים ב־.env
-    const options = {
-        expiresIn: '1h' // פג תוקף אחרי שעה
-    };
+    // const secret = process.env.JWT_SECRET || 'your_jwt_secret'; // סוד להצפנה - רצוי לשים ב־.env
+    // const options = {
+    //     expiresIn: '1h' // פג תוקף אחרי שעה
+    // };
+    const secret = process.env.JWT_SECRET || 'your_jwt_secret';
+    const options = { expiresIn: '1h' };
 
     return jwt.sign(payload, secret, options);
 }
@@ -37,4 +37,13 @@ export function authenticateJWT(req, res, next) {
     } else {
         res.status(401).json({ message: 'Unauthorized - token missing' });
     }
+}
+
+export function authorizeRoles(...roles) {
+    return (req, res, next) => {
+        if (!req.user || !roles.includes(req.user.role)) {
+            return res.status(403).json({ message: 'Forbidden - insufficient privileges' });
+        }
+        next();
+    };
 }

@@ -6,9 +6,14 @@ function Nav() {
     const navigate = useNavigate();
     const { currentUser, setCurrentUser } = useCurrentUser();
     const handleLogout = () => {
-        localStorage.removeItem('currentUser');  
-        setCurrentUser({ id: -1, username: '',  });
-        navigate('/login');  
+        // localStorage.removeItem('currentUser');  
+        // setCurrentUser({ id: -1, username: '',  });
+        // navigate('/login');  
+         localStorage.removeItem('currentUser');
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        setCurrentUser({ id: -1, name: '' });
+        navigate('/login');
     };
     return (
         <nav className={styles.nav}>

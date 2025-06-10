@@ -7,7 +7,10 @@ const Comments = ({ postId }) => {
   // const token = localStorage.getItem('token');
 
   useEffect(() => {
-    fetch(`http://localhost:3000/posts/${postId}/comments`)
+    // fetch(`http://localhost:3000/posts/${postId}/comments`)
+    fetch(`http://localhost:3000/posts/${postId}/comments`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => setComments(data))
       .catch(err => console.error(err));

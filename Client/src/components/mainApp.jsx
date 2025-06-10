@@ -20,15 +20,14 @@ function MainApp() {
       <Routes>
         {/* <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} /> */}
-        <Route path="/" element={<Navigate to="/home" replace />} />
-
-        <Route path='/home' element={<Home />} />
-        {/* <Route path='/home' element={(currentUser.id != -1) ? <Home /> : <NoPage />} /> */}
+        <Route path="/register" element={<Register />} />
+        <Route path='/home' element={currentUser.id !== -1 ? <Home /> : <Navigate to="/login" />} />
+         {/* <Route path='/home' element={(currentUser.id != -1) ? <Home /> : <NoPage />} /> */}
         <Route path='/supporterDetails' element={<SupporterDetails />} />
         <Route path='/bereavedDetails' element={<BereavedDetails />} />
-        <Route path='/users/:userId/posts' element={<PostsList />} />
-        <Route path='/Calendar' element={<Calendar />} />
+        
+<Route path='/users/:userId/posts' element={<PostsList />} />
+    <Route path='/Calendar' element={<Calendar />} />
 
 
         {/* <Route path='/users/:userId/posts' element={currentUser.id !== -1 ? <Posts /> : <NoPage />} />     */}
