@@ -1,5 +1,3 @@
-// Posts service: perform DB queries for Posts, Comments, Likes, Follows
-
 import db from '../../DB/dbConnection.js';
 
  export async function getPostsByUser(userId) {
@@ -37,21 +35,6 @@ export async function deletePost(postId, userId) {
     return result.affectedRows > 0;
 }
 
-// Comments
-export async function getCommentsForPost(postId) {
-    const [rows] = await db.query(`
-        SELECT * FROM comments WHERE post_id = ? ORDER BY created_at
-    `, [postId]);
-    return rows;
-}
-
-export async function addCommentToPost(postId, userId, content) {
-    const [result] = await db.query(`
-        INSERT INTO comments (post_id, user_id, content)
-        VALUES (?, ?, ?)
-    `, [postId, userId, content]);
-    return result.insertId;
-}
 
 // Likes
 export async function addLikeToPost(postId, userId) {

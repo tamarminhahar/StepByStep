@@ -13,9 +13,7 @@ router.post('/', PostController.createPost);
 // router.get('/:postId', PostController.getPostById);
 router.delete('/:postId', PostController.deletePost);
 
-// Nested routes - Comments
-router.get('/:postId/comments', PostController.getCommentsForPost);
-router.post('/:postId/comments', PostController.addCommentToPost);
+
 
 // Nested routes - Likes
 router.post('/:postId/likes', PostController.addLikeToPost);

@@ -5,6 +5,7 @@ import cors from 'cors';
 import db from '../DB/dbConnection.js';
 import UserRouter from './Routes/Users.js';
 import PostRouter from './Routes/Posts.js';
+import CommentRouter from './Routes/Comments.js';
 // import ProfileRouter from './Routes/Profiles.js';
 const app = express();
 const port = 3000;
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 });
 app.use('/posts', PostRouter);  
 app.use('/users', UserRouter);
+app.use('/comments', CommentRouter);
 
 
 
