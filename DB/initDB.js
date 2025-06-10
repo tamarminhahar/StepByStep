@@ -25,6 +25,9 @@ async function initDatabase() {
   await db.query(`DROP TABLE IF EXISTS likes;`);
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
+await db.query(`DROP TABLE IF EXISTS base_calendar;`);
+await db.query(`DROP TABLE IF EXISTS bereaved_calendar;`);
+await db.query(`DROP TABLE IF EXISTS supporter_calendar;`);
 
   await db.query(`SET FOREIGN_KEY_CHECKS = 1;`);
 
@@ -82,6 +85,37 @@ async function initDatabase() {
       FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE base_calendar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    bereaved_profile_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME,
+    FOREIGN KEY (bereaved_profile_id) REFERENCES bereaved_profile(id)
+);
+CREATE TABLE supporter_calendar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME,
+    created_by_supporter_id INT NOT NULL,
+    FOREIGN KEY (created_by_supporter_id) REFERENCES users(id)
+);
+
+CREATE TABLE bereaved_calendar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    start_date DATETIME NOT NULL,
+    end_date DATETIME,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
   `);
 
   console.log('Tables created!');

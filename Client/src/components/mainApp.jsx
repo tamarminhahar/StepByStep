@@ -2,10 +2,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 
 import Home from './home'
 import Login from './login/login'
-import SupporterDetails from './userDetails/supporterDetails'
-// import BereavedDetails from './userDetails/bereavedDetails'
-// import UserDetails from './userDetails/userDetails'
-// import UserDetails from './userDetails/userDetails'
+import SupporterDetails from './userDetails/SupporterDetails'
+import BereavedDetails from './userDetails/BereavedDetails'
+import Calendar from './Calendar/Calendar'; 
+
 import PostsList from './postsList/PostsList'
 
 // import Comments from './comments/comments'
@@ -24,8 +24,11 @@ function MainApp() {
         <Route path='/home' element={ <Home /> } />
          {/* <Route path='/home' element={(currentUser.id != -1) ? <Home /> : <NoPage />} /> */}
         <Route path='/supporterDetails' element={<SupporterDetails />} />
-        {/* <Route path='/bereavedDetails' element={<BereavedDetails />} /> */}
+        <Route path='/bereavedDetails' element={<BereavedDetails />} />
 <Route path='/users/:userId/posts' element={<PostsList />} />
+    <Route path='/Calendar' element={<Calendar />} />
+
+
       {/* <Route path='/users/:userId/posts' element={currentUser.id !== -1 ? <Posts /> : <NoPage />} />     */}
 
 

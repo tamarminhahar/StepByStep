@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate,useLocation  } from 'react-router-dom';
 import styles from './userDetails.module.css'; // You can reuse the same CSS
-
+import { useCurrentUser } from '../userProvider.jsx';
 
 // Bereaved Profile Form
 const BereavedDetails = () => {
@@ -10,7 +10,7 @@ const BereavedDetails = () => {
     const alertDivRef = useRef();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
-    const location = useLocation();
+        const { setCurrentUser } = useCurrentUser();    const location = useLocation();
     const { newUser } = location.state || {};
     // Function to display message in the alert div
     const manageMessages = (message) => {
@@ -45,7 +45,9 @@ const BereavedDetails = () => {
 
             if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
 
-            localStorage.setItem('currentUser', JSON.stringify({id: id,name: newUser.name,email: newUser.email}));
+           const currentUser = { name: newUser.name };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            setCurrentUser(currentUser);
 
             navigate('/home');
         } catch (err) {
