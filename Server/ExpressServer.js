@@ -5,7 +5,6 @@ import db from '../DB/dbConnection.js';
 import UserRouter from './Routes/Users.js';
 import PostRouter from './Routes/Posts.js';
 import CommentRouter from './Routes/Comments.js';
-// import ProfileRouter from './Routes/Profiles.js';
 dotenv.config();
 
 const app = express();

@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './register.module.css';
@@ -72,7 +71,7 @@ export default function Register() {
                         roleRef.current.value === 'bereaved'
                             ? '/bereavedDetails'
                             : '/supporterDetails';
-
+debugger
                     navigate(path, { state: { newUser} });
             } else {
                 manageMessages('You have to use the same password. Please recheck!');
