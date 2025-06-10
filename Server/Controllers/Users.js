@@ -26,8 +26,9 @@ export const addUserTo = async (req, res) => {
 };
 
 export async function getUserByNameTo(req, res) {
+    console.log('typeof name:', typeof name);
+
     const { name } = req.params;
-    console.log(name);
     try {
         const user = await getUserWithPasswordByName(name);
         if (!user) {
@@ -73,7 +74,10 @@ export async function getUserByNameTo(req, res) {
 
 //     res.json({ token });
 // }
-export async function loginUserTo(req, res) {
+export async function loginUserTo(req, res) 
+{
+    console.log('login request:', req.body);  // תראי מה מגיע
+
     const { name, password } = req.body;
     const user = await loginUser(name, password);
     if (!user) {

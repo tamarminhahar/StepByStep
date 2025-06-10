@@ -1,13 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate ,useLocation } from 'react-router-dom';
 import styles from './userDetails.module.css'; // You can reuse the same CSS
-
+import { useCurrentUser } from '../userProvider.jsx';
 // Supporter Profile Form
 const SupporterDetails = () => {
     const supporterTypeRef = useRef();
     const alertDivRef = useRef();
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+        const { setCurrentUser } = useCurrentUser();
+
         const location = useLocation();
         const { newUser } = location.state || {};
 
@@ -43,8 +45,9 @@ const SupporterDetails = () => {
             });
 
             if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
-            localStorage.setItem('currentUser', JSON.stringify({name: newUser.name}));
-
+           const currentUser = { name: newUser.name,};
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            setCurrentUser(currentUser);
             navigate('/home');
         } catch (err) {
             setError(err.message);

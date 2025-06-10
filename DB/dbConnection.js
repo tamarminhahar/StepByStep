@@ -11,7 +11,7 @@ const db = await mysql.createPool({
 
     host:'127.0.0.1',
     user:  'root',
-    password: process.env.DB_PASSWORD || '327880845',
+    password: process.env.DB_PASSWORD || 'chavak1017',
     database:'grief_support', 
     multipleStatements: true 
   });

@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 // import jwt from 'jsonwebtoken';
 
 export const getUserByName = async (name) => {
-    const [rows] = await db.execute('SELECT * FROM users WHERE name = ?', [name]);
+const [rows] = await db.execute('SELECT * FROM users WHERE user_name = ?', [name]);
     return rows[0];
 };
 export async function getUserWithPasswordByName(userName) {
@@ -32,6 +32,7 @@ export async function addUser(userData) {
         throw err;
     }
 }
+
 
 //     try {
 //         const [rows] = await db.execute(
