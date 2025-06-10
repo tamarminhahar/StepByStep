@@ -71,7 +71,7 @@ export default function Register() {
                         roleRef.current.value === 'bereaved'
                             ? '/bereavedDetails'
                             : '/supporterDetails';
-debugger
+
                     navigate(path, { state: { newUser} });
             } else {
                 manageMessages('You have to use the same password. Please recheck!');

@@ -175,7 +175,7 @@ const BereavedDetails = () => {
     };
 React.useEffect(() => {
     const token = localStorage.getItem('token');
-    const role = localStorage.getItem('userRole');
+    const role = localStorage.getItem('role');
     if (!token || role !== 'bereaved') {
         navigate('/home');
     }
