@@ -1,5 +1,3 @@
-// Middlewares/auth.js
-
 import jwt from 'jsonwebtoken';
 
 // הפונקציה הזו יוצרת token עבור המשתמש (תחזיר אותו ל־client אחרי login)
