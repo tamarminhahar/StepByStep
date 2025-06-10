@@ -34,15 +34,10 @@ async function initDatabase() {
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_name VARCHAR(20) UNIQUE NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
       role ENUM('bereaved', 'supporter', 'admin') NOT NULL
     );
 
-      CREATE TABLE IF NOT EXISTS passwords (
-      user_id INT PRIMARY KEY,
-      password_hash VARCHAR(255) NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    );
-    
     CREATE TABLE bereaved_profile (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,
@@ -95,3 +90,9 @@ async function initDatabase() {
 initDatabase().catch(err => {
   console.error('Error initializing database:', err);
 });
+
+    //     CREATE TABLE IF NOT EXISTS passwords (
+    //   user_id INT PRIMARY KEY,
+    //   password_hash VARCHAR(255) NOT NULL,
+    //   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    // );

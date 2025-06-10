@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 const Comments = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState('');
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
 
   useEffect(() => {
     fetch(`http://localhost:3000/posts/${postId}/comments`)

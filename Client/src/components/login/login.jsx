@@ -136,10 +136,7 @@ export default function Login() {
             if (!result.ok) {
                 manageMessages('Username or password incorrect, try again');
             } else {
-                // Save JWT token to localStorage
-                localStorage.setItem('token', result.token);
-
-                // Navigate to home page
+                localStorage.setItem('currentUser', JSON.stringify({name: nameRef.current.value}));
                 navigate('/home');
             }
         });

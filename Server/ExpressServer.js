@@ -10,7 +10,8 @@ dotenv.config();
 
 const app = express();
 dotenv.config();
-const port = process.env.PORT ;
+// const port = process.env.PORT || 3000;
+const port = 3000; // Default port for development, can be overridden by environment variable
 app.use(cors({
     origin: 'http://localhost:5173'
   }));

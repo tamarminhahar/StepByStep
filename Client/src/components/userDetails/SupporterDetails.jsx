@@ -43,7 +43,7 @@ const SupporterDetails = () => {
             });
 
             if (!profileResponse.ok) throw new Error(`Error: ${profileResponse.status}`);
-            localStorage.setItem('currentUser', JSON.stringify({id: id,name: newUser.name,email: newUser.email}));
+            localStorage.setItem('currentUser', JSON.stringify({name: newUser.name}));
 
             navigate('/home');
         } catch (err) {
