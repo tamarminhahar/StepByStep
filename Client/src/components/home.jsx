@@ -1,5 +1,4 @@
 import React from "react";
-import { useCurrentUser } from './userProvider'; 
 import Nav from "./nav/nav";
 //The home page 
 export default function Home() {

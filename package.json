@@ -4,6 +4,6 @@
     "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/react": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
-    "jsonwebtoken": "^9.0.2"
-  }
+  "jsonwebtoken": "^9.0.2",
+    "cookie-parser": "^1.4.6"  }
 }

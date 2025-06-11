@@ -5,9 +5,9 @@ import db from './dbConnection.js';
 async function initDatabase() {
   // First, create the database if it doesn't exist:
   const connection = await mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: process.env.DB_PASSWORD || 'chavak1017',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     multipleStatements: true,
   });
 
@@ -25,21 +25,25 @@ async function initDatabase() {
   await db.query(`DROP TABLE IF EXISTS likes;`);
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
-await db.query(`DROP TABLE IF EXISTS base_calendar;`);
-await db.query(`DROP TABLE IF EXISTS bereaved_calendar;`);
-await db.query(`DROP TABLE IF EXISTS supporter_calendar;`);
+  await db.query(`DROP TABLE IF EXISTS base_calendar;`);
+  await db.query(`DROP TABLE IF EXISTS bereaved_calendar;`);
+  await db.query(`DROP TABLE IF EXISTS supporter_calendar;`);
 
   await db.query(`SET FOREIGN_KEY_CHECKS = 1;`);
 
-  // Create tables:
   await db.query(`
     CREATE TABLE users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_name VARCHAR(20) UNIQUE NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
-      password_hash VARCHAR(255) NOT NULL,
       role ENUM('bereaved', 'supporter', 'admin') NOT NULL
     );
+
+    CREATE TABLE passwords (
+    user_id INT PRIMARY KEY,
+    password_hash VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
     CREATE TABLE bereaved_profile (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -124,9 +128,3 @@ CREATE TABLE bereaved_calendar (
 initDatabase().catch(err => {
   console.error('Error initializing database:', err);
 });
-
-    //     CREATE TABLE IF NOT EXISTS passwords (
-    //   user_id INT PRIMARY KEY,
-    //   password_hash VARCHAR(255) NOT NULL,
-    //   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-    // );

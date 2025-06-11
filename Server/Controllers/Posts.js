@@ -9,7 +9,12 @@ import * as postService from '../Services/Posts.js';
 export async function createPost(req, res) {
     // const { title, body, media_url, grief_tag } = req.body;
     // const postId = await postService.addPost(req.user.id, title, body, media_url, grief_tag);
-    const { user_id, title, body, media_url, grief_tag } = req.body;
+//     const { user_id, title, body, media_url, grief_tag } = req.body;
+// const postId = await postService.addPost(user_id, title, body, media_url, grief_tag);
+
+const { title, body, media_url, grief_tag } = req.body;
+const user_id = req.user.id; // לקרוא מה־JWT, לא מה־body
+
 const postId = await postService.addPost(user_id, title, body, media_url, grief_tag);
 
 const posts = await postService.getPostsByUser(user_id);

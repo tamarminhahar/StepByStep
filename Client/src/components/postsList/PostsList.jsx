@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import SinglePost from '../singlePost/SinglePost.jsx';
-import { useCurrentUser } from '../userProvider.jsx';
 import Nav from '../nav/nav.jsx';
 
 const PostsList = () => {
@@ -18,23 +17,42 @@ const PostsList = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
 
 
-   const fetchPosts = async (id) => {
-        try {
-            setLoading(true);
-            const response = await  fetch('http://localhost:3000/posts');
-            if (!response.ok) {
-                throw new Error("Failed to fetch posts");
-            }
-            const data = await response.json();
-            setPosts(data);
-            setDisplayedPosts(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
+//    const fetchPosts = async (id) => {
+//         try {
+//             setLoading(true);
+//             const response = await  fetch('http://localhost:3000/posts');
+//             if (!response.ok) {
+//                 throw new Error("Failed to fetch posts");
+//             }
+//             const data = await response.json();
+//             setPosts(data);
+//             setDisplayedPosts(data);
+//         } catch (err) {
+//             setError(err.message);
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+  const fetchPosts = async (id) => {
+    try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3000/posts', {
+            credentials: 'include', // חייב!
+        });
+        if (!response.ok) {
+            throw new Error("Failed to fetch posts");
         }
-    };
-    useEffect(() => {
+        const data = await response.json();
+        setPosts(data);
+        setDisplayedPosts(data);
+    } catch (err) {
+        setError(err.message);
+    } finally {
+        setLoading(false);
+    }
+};
+  
+useEffect(() => {
         if (currentUser) {
             fetchPosts(currentUser.id);
         }
@@ -64,8 +82,9 @@ const PostsList = () => {
             const response = await fetch(`http://localhost:3000/posts/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
-                    user_id: Number(currentUser.id),
+                    // user_id: Number(currentUser.id),
                     title: newPostData.title,
                     body: newPostData.body,
                     media_url: newPostData.media_url,
@@ -91,8 +110,6 @@ const PostsList = () => {
     if (loading) return <p>Loading posts...</p>;
     if (error) return <p>Error: {error}</p>;
 
-  
-    // return (
     //     <>
     //         <Nav />
     //         <div className={styles.postListContainer}>

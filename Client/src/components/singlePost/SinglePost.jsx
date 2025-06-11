@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Comments from '../comments/Comments.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useCurrentUser } from '../userProvider.jsx';
 
 const SinglePost = ({ post, setPosts, selectedPostId, setSelectedPostId }) => {
     const [showComments, setShowComments] = useState(false);
@@ -16,17 +15,6 @@ const SinglePost = ({ post, setPosts, selectedPostId, setSelectedPostId }) => {
     const token = localStorage.getItem('token');
     const { currentUser } = useCurrentUser();
 
-    // const handleDelete = () => {
-    //     fetch(`http://localhost:3000/posts/${post.id}`, {
-    //         method: 'DELETE',
-    //         //   headers: { 'Authorization': `Bearer ${token}` }
-    //         headers: { 'Content-Type': 'application/json' },
-
-    //     })
-    //         .then(() => onDelete())
-    //         .catch(err => console.error(err));
-    // };
-
     const handleDelete = (id) => {
   fetch(`http://localhost:3000/posts/${id}?user_id=${currentUser.id}`, {
     method: 'DELETE',
@@ -39,20 +27,6 @@ const SinglePost = ({ post, setPosts, selectedPostId, setSelectedPostId }) => {
         .catch((err) => console.error(err));
 };
 
-    //  const handleDelete = async (id) => {
-    //     try {
-
-    //         const response = await fetch(`http://localhost:3000/posts/${id}`, {
-    //             method: 'DELETE',
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error(`Error: ${response.status}`);
-    //         }
-    //         setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
-    //     } catch (err) {
-    //         setError(err.message);
-    //     }
-    // };
 
     const handleUpdatePost = async (updatedPost) => {
         console.log('Updated Post:', updatedPost);

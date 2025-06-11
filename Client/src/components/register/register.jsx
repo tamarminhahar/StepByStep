@@ -26,7 +26,7 @@ export default function Register() {
                 headers: { 'Content-Type': 'application/json' },
             });
     if (response.status === 404) {
-      return false; // המשתמש לא קיים
+      return false; 
     }
 
     if (response.status === 409) {
@@ -64,9 +64,7 @@ export default function Register() {
                         role: roleRef.current.value.toLowerCase(),
 
                     };
-                
-                            //   localStorage.setItem('pendingUser', JSON.stringify(newUser));
-      
+                      
             const path =
                         roleRef.current.value === 'bereaved'
                             ? '/bereavedDetails'
