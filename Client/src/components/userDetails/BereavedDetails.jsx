@@ -179,7 +179,7 @@ React.useEffect(() => {
     if (!token || role !== 'bereaved') {
         navigate('/home');
     }
-}, [navigate]);
+}, [navigate , newUser]);
 
     // Submit handler for the profile form
     const handleDetailsSubmit = (event) => {
