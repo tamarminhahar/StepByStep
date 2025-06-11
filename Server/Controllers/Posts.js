@@ -1,10 +1,28 @@
 
 import * as postService from '../Services/Posts.js';
 
- export async function getPosts(req, res) {
-     const posts = await postService.getAllPosts();
-     res.json(posts);
- }
+export async function getPosts(req, res) {
+    const {
+        sort,
+        grief_tag,
+        startDate,
+        endDate,
+        liked,
+        mine,
+    } = req.query;
+
+    const options = {
+        sort,
+        grief_tag,
+        startDate,
+        endDate,
+        liked: liked === 'true',
+        userId: mine === 'true' ? req.user.id : undefined,
+    };
+
+    const posts = await postService.getAllPosts(options);
+    res.json(posts);
+}
 
 export async function createPost(req, res) {
     // const { title, body, media_url, grief_tag } = req.body;

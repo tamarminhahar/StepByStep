@@ -7,10 +7,63 @@ import db from '../../DB/dbConnection.js';
      return rows;
  }
 
- export async function getAllPosts() {
-    const [rows] = await db.query(`
-        SELECT * FROM posts ORDER BY created_at DESC
-    `);
+export async function getAllPosts(options = {}) {
+    const {
+        sort = 'date',
+        grief_tag,
+        startDate,
+        endDate,
+        liked,
+        userId,
+    } = options;
+
+    let query = `SELECT posts.*, 
+                        COUNT(DISTINCT likes.id) AS likesCount,
+                        COUNT(DISTINCT comments.id) AS commentsCount
+                 FROM posts
+                 LEFT JOIN likes ON likes.post_id = posts.id
+                 LEFT JOIN comments ON comments.post_id = posts.id`;
+
+    const params = [];
+    const conditions = [];
+
+    if (grief_tag) {
+        conditions.push('posts.grief_tag = ?');
+        params.push(grief_tag);
+    }
+
+    if (startDate) {
+        conditions.push('posts.created_at >= ?');
+        params.push(startDate);
+    }
+
+    if (endDate) {
+        conditions.push('posts.created_at <= ?');
+        params.push(endDate);
+    }
+
+    if (userId) {
+        conditions.push('posts.user_id = ?');
+        params.push(userId);
+    }
+
+    if (conditions.length) {
+        query += ` WHERE ${conditions.join(' AND ')}`;
+    }
+
+    query += ' GROUP BY posts.id';
+
+    if (liked) {
+        query += ' HAVING likesCount > 0';
+    }
+
+    if (sort === 'popularity') {
+        query += ' ORDER BY (likesCount + commentsCount) DESC';
+    } else {
+        query += ' ORDER BY posts.created_at DESC';
+    }
+
+    const [rows] = await db.query(query, params);
     return rows;
 }
 export async function addPost(userId, title, body, media_url, grief_tag) {
