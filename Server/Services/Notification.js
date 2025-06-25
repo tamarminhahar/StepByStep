@@ -18,12 +18,12 @@ export async function createNotification({ user_id, type, message, target_url })
 
 export async function markAsRead(notificationId, userId) {
     await db.query(`
-        UPDATE notifications SET is_read = TRUE  WHERE id = ? AND user_id = ?
+        UPDATE notifications SET is_read = true WHERE id = ? AND user_id = ?
     `, [notificationId, userId]);
 }
 export async function markAllAsRead(userId) {
     await db.query(`
-        UPDATE notifications SET is_read = TRUE  WHERE user_id = ?
+        UPDATE notifications SET is_read = true WHERE user_id = ?
     `, [userId]);
 }
 

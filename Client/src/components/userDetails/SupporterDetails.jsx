@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styles from './userDetails.module.css';
-import ApiClientRequests from '../../ApiClientRequests';
+import ApiClientRequests from '../services/ApiClientRequests'
 import { toast } from 'react-toastify';
 import { z } from 'zod';
 import 'react-toastify/dist/ReactToastify.css';

@@ -1,16 +1,36 @@
 
 import * as calendarService from '../Services/Calendar.js';
-import { sendNotificationToUser } from '../socketHandlers/NotificationSocketController.js';
-import { createNotification } from '../Services/Notification.js';
+import { sendNotificationToUser } from '../socketHandlers/NotificationSocketController.js'; // וד
+import {createNotification} from '../Services/Notification.js'; // ודא שהנתיב נכון
 import { getAllBereavedUsers } from '../Services/Users.js';
 
 
 export async function createEvent(req, res) {
-    try {
+//     try {
+        
+//         const user = req.user;
+//         const eventData = req.body;
+// console.log('createEvent - user', user,eventData);    
+//         // 🟦 שיוך שדות לפי סוג המשתמש
+//         if (user.role === 'supporter') {
+//             eventData.created_by_supporter_id = user.id;
+//             eventData.user_id = null;
+//             eventData.apply_to_all = true; // ברירת מחדל לתומך – שליחה לכולם
+//         } else if (user.role === 'bereaved') {
+//             eventData.user_id = user.id;
+//             eventData.created_by_supporter_id = null;
+//         }
+try {
         const user = req.user;
         const eventData = req.body;
+
+        console.log('createEvent - user', user, eventData);
+
+        // 🟦 שיוך שדות לפי סוג המשתמש
         if (user.role === 'supporter') {
             eventData.created_by_supporter_id = user.id;
+
+            // אם לא הגיע user_id – סימן שזה אירוע כללי, ולכן apply_to_all = true
             if (!eventData.user_id) {
                 eventData.apply_to_all = true;
             } else {
@@ -20,31 +40,43 @@ export async function createEvent(req, res) {
             eventData.user_id = user.id;
             eventData.created_by_supporter_id = null;
         }
+        // 🟦 ולידציה של תוכן האירוע
         validateEventData(eventData, user);
 
+        // 🟩 יצירת האירוע במסד
         const eventId = await calendarService.createEvent(eventData);
 
+        // 🟩 הכנה לשידור socket
         const io = req.app.get('io');
         const message = `נוסף עבורך אירוע חדש: "${eventData.title}"`;
 
-        if (user.role === 'supporter' && eventData.apply_to_all) {
-            const bereavedUsers = await getAllBereavedUsers();
-            for (const bereaved of bereavedUsers) {
-                await createNotification({
-                    user_id: bereaved.id,
-                    type: 'event_reminder',
-                    message,
-                    target_url: `/calendar?eventId=${eventId}`
-                });
+        // 🟨 אם תומך יצר אירוע:
+        if (user.role === 'supporter'&&eventData.apply_to_all) {
+            // 🟨 אם הוא מייעד את זה לאבל מסוים
+    
+                const bereavedUsers = await getAllBereavedUsers();
+console.log('bereavedUsers', bereavedUsers);
+                for (const bereaved of bereavedUsers) {
+                    await createNotification({
+                        user_id: bereaved.id,
+                        type: 'event_reminder',
+                        message,
+        target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
+                    });
 
-                sendNotificationToUser(io, bereaved.id, {
-                    type: 'event_reminder',
-                    message,
-                    target_url: `/calendar?eventId=${eventId}`
-                });
+                    sendNotificationToUser(io, bereaved.id, {
+                        
+                        type: 'event_reminder',
+                        message,
+        target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
+                    });
+                }
             }
-        }
+        
+
+        // 🟩 שליחת תגובה ללקוח
         res.status(201).json({ id: eventId });
+
     } catch (error) {
         console.error('Error creating event:', error);
         res.status(400).json({ error: error.message });
@@ -170,7 +202,6 @@ function validateEventData(eventData, user) {
     }
 }
 
-
 export async function updateParticipation(req, res) {
   const user = req.user;
   const { id } = req.params;
@@ -196,7 +227,7 @@ export async function updateParticipation(req, res) {
 
   const io = req.app.get('io');
   if (!io) {
-    console.error('io לא מוגדר');
+    console.error('❌ io לא מוגדר');
     return res.status(500).json({ error: 'Socket server not initialized' });
   }
 

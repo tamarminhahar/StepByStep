@@ -1,18 +1,20 @@
 
 import { useNavigate } from 'react-router-dom';
 import styles from './nav.module.css';
-
+import APIRequests from "../services/ApiClientRequests";
 
 function Nav() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    await fetch('http://localhost:3000/users/logout', {
-      method: 'POST',
-      credentials: 'include',
-    });
-    navigate('/login');
-  };
+  try {
+    await APIRequests.postRequest("users/logout");
+    navigate("/login");
+  } catch (error) {
+    console.error("שגיאה ביציאה:", error.message);
+  }
+};
+
 
   return (
     <nav className={styles.nav}>
