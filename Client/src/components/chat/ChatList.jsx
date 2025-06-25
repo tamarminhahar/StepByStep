@@ -6,10 +6,11 @@ import { toast } from 'react-toastify';
 import ApiClientRequests from '../../ApiClientRequests';
 import styles from './chatStyle/ChatList.module.css';
 import Nav from '../nav/nav.jsx';
+import { socket } from '../../socket';
 
 export default function ChatList() {
   const location = useLocation();
-  const initialMode = location.state?.mode || 'supporter'; // מקבל מה־navigate state
+  const initialMode = location.state?.mode || 'supporter'; 
   const [mode, setMode] = useState(initialMode);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ export default function ChatList() {
 
     const fetchUsers = async () => {
       try {
-const users = await ApiClientRequests.getRequest(`users/available?mode=${mode}`);
+        const users = await ApiClientRequests.getRequest(`users/available?mode=${mode}`);
         const filtered = users.filter((u) => u.id !== currentUser.id);
         setUsers(filtered);
       } catch (err) {
@@ -37,7 +38,7 @@ const users = await ApiClientRequests.getRequest(`users/available?mode=${mode}`)
 
     const fetchPending = async () => {
       try {
-const pending = await ApiClientRequests.getRequest(`chat/pending`);
+        const pending = await ApiClientRequests.getRequest(`chat/pending`);
         const map = {};
         console.log(pending)
         pending.forEach((msg) => {
@@ -62,6 +63,31 @@ const pending = await ApiClientRequests.getRequest(`chat/pending`);
       }
     });
   };
+// useEffect(() => {
+//   socket.on('user_status_change', ({ userId, isOnline }) => {
+//     setUsers((prevUsers) =>
+//       prevUsers.map((user) =>
+//         user.id === userId ? { ...user, is_online: isOnline } : user
+//       )
+//     );
+//   });
+//   return () => {
+//     socket.off('user_status_change');
+//   };
+// }, []);
+useEffect(() => {
+    socket.on('user_status_change', ({ userId, isOnline }) => {
+        setUsers(prev =>
+            prev.map(user =>
+                user.id === userId ? { ...user, is_online: isOnline } : user
+            )
+        );
+    });
+
+    return () => {
+        socket.off('user_status_change');
+    };
+}, []);
 
   if (!currentUser) return null;
 
@@ -72,7 +98,7 @@ const pending = await ApiClientRequests.getRequest(`chat/pending`);
   return (
     <div className={styles.chatListContainer}>
       <Nav />
-      <div className={styles.modeSelector}>
+      {/* <div className={styles.modeSelector}>
         <button
           className={styles.modeButton}
           onClick={() => setMode('supporter')}
@@ -87,7 +113,25 @@ const pending = await ApiClientRequests.getRequest(`chat/pending`);
         >
           שיחה עם אבל
         </button>
-      </div>
+      </div> */}
+{currentUser.role !== 'supporter' && (
+  <div className={styles.modeSelector}>
+    <button
+      className={styles.modeButton}
+      onClick={() => setMode('supporter')}
+      style={{ opacity: mode === 'supporter' ? 1 : 0.6 }}
+    >
+      שיחה עם תומך
+    </button>
+    <button
+      className={styles.modeButton}
+      onClick={() => setMode('bereaved')}
+      style={{ opacity: mode === 'bereaved' ? 1 : 0.6 }}
+    >
+      שיחה עם אבל
+    </button>
+  </div>
+)}
 
       <h3 className={styles.header}>
         בחר {mode === 'supporter' ? 'תומך' : 'אבל'} לשיחה

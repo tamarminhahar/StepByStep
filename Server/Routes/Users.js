@@ -19,7 +19,7 @@ router.post('/login', userController.loginUserTo);
 router.post("/", userController.addUserTo);
 router.post('/bereaved_profile', authenticateJWT, authorizeRoles('bereaved'), userController.createBereavedProfile);
 router.post('/supporter_profile', authenticateJWT, authorizeRoles('supporter'), userController.createSupporterProfile);
-router.post('/logout', userController.logoutUser);
+router.post('/logout', authenticateJWT,userController.logoutUser);
 
 router.post('/check-existence', userController.checkUserExistence);
 

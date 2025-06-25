@@ -10,7 +10,6 @@ import CommentRouter from './Routes/Comments.js';
 import ChatRouter from './Routes/Chat.js';
 import calendarRouter from './Routes/Calendar.js';
 import notificationRouter from './Routes/Notification.js';
-
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { setupSocket } from './socketHandlers/SetupSocket.js';
@@ -29,6 +28,7 @@ const io = new SocketIOServer(server, {
 });
 
 setupSocket(io); 
+app.set('io', io);
 
 app.use(cors({
     origin: 'http://localhost:5173',

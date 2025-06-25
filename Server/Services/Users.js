@@ -114,3 +114,6 @@ export async function getAllBereavedUsers() {
   `);
   return rows;
 }
+export async function updateOnlineStatus(userId, isOnline) {
+    await db.query(`UPDATE users SET is_online = ? WHERE id = ?`, [isOnline, userId]);
+}

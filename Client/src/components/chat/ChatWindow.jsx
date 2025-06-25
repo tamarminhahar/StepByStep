@@ -52,17 +52,21 @@ export default function ChatWindow() {
 
           const sessionId = res.sessionId;
           setSessionId(sessionId);
+          setMessages(res.history);
+          setTimeout(scrollToBottom, 0);
 
-          try {
-            const history = await ApiClientRequests.getRequest(`chat/history/${sessionId}`);
-            const mapped = history.map(msg =>
-              msg.is_deleted ? { ...msg, message: 'ההודעה נמחקה', deleted: true } : msg
-            );
-            setMessages(mapped);
-            setTimeout(scrollToBottom, 0);
-          } catch (err) {
-            console.error('Failed to fetch chat history:', err);
-          }
+          // setSessionId(sessionId);
+
+          // try {
+          //   const history = await ApiClientRequests.getRequest(`chat/history/${sessionId}`);
+          //   const mapped = history.map(msg =>
+          //     msg.is_deleted ? { ...msg, message: 'ההודעה נמחקה', deleted: true } : msg
+          //   );
+          //   setMessages(mapped);
+          //   setTimeout(scrollToBottom, 0);
+          // } catch (err) {
+          //   console.error('Failed to fetch chat history:', err);
+          // }
         }
       );
     };
@@ -167,73 +171,73 @@ export default function ChatWindow() {
     <>
       <Nav />
       <div className={styles.chatContainer}>
-      <div className={styles.chatHeader}>
-        <h3>צ'אט עם {userName || `משתמש ${otherUserId}`}</h3>
-        <button onClick={toggleSound} className={styles.soundToggle}>
-        {soundEnabled ? '🔊' : '🔇'}
-        </button>
-      </div>
-
-      <div className={styles.chatBox}>
-        {messages.map((msg, index) => (
-        <div key={msg.id || index}>
-          <div className={msg.senderId === currentUser.id ? styles.messageRight : styles.messageLeft}>
-          <div className={styles.senderName}>{getDisplayName(msg.senderId)}</div>
-          <div className={styles.messageBubble + (msg.deleted ? ' ' + styles.deletedMessage : '')}>
-            {msg.deleted ? '🗑 ההודעה נמחקה' : msg.message}
-            {msg.senderId === currentUser.id && !msg.deleted && (
-            <button
-              className={styles.deleteButton}
-              onClick={() => socket.emit('delete_message', { messageId: msg.id })}>
-              🗑
-            </button>
-            )}
-          </div>
-          {msg.senderId === currentUser.id && msg.seenAt && (
-            <div className={styles.seenCheck}>✓</div>
-          )}
-          </div>
+        <div className={styles.chatHeader}>
+          <h3>צ'אט עם {userName || `משתמש ${otherUserId}`}</h3>
+          <button onClick={toggleSound} className={styles.soundToggle}>
+            {soundEnabled ? '🔊' : '🔇'}
+          </button>
         </div>
-        ))}
-        {typingUserName && (
-        <div className={styles.typingIndicator}>{typingUserName} מקליד/ה...</div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
 
-      <div className={styles.inputRow}>
-        <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onFocus={() => {
-          if (lastUnreadMessageId) {
-          socket.emit('message seen', { messageId: lastUnreadMessageId });
-          setLastUnreadMessageId(null);
-          }
-          socket.emit('user_typing', {
-          sessionId,
-          userName: currentUser.user_name,
-          userId: currentUser.id
-          });
-        }}
-        onBlur={() => {
-          socket.emit('user_stopped_typing', {
-          sessionId,
-          userId: currentUser.id
-          });
-        }}
-        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-        className={styles.inputField}
-        placeholder="כתוב הודעה..."
-        />
-        <button className={styles.sendButton} onClick={handleSendMessage}>שלח</button>
-      </div>
+        <div className={styles.chatBox}>
+          {messages.map((msg, index) => (
+            <div key={msg.id || index}>
+              <div className={msg.senderId === currentUser.id ? styles.messageRight : styles.messageLeft}>
+                <div className={styles.senderName}>{getDisplayName(msg.senderId)}</div>
+                <div className={styles.messageBubble + (msg.deleted ? ' ' + styles.deletedMessage : '')}>
+                  {msg.deleted ? '🗑 ההודעה נמחקה' : msg.message}
+                  {msg.senderId === currentUser.id && !msg.deleted && (
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => socket.emit('delete_message', { messageId: msg.id })}>
+                      🗑
+                    </button>
+                  )}
+                </div>
+                {msg.senderId === currentUser.id && msg.seenAt && (
+                  <div className={styles.seenCheck}>✓</div>
+                )}
+              </div>
+            </div>
+          ))}
+          {typingUserName && (
+            <div className={styles.typingIndicator}>{typingUserName} מקליד/ה...</div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-      <div aria-live="polite" style={{ position: 'absolute', left: '-9999px' }}>
-        {liveMessage}
-      </div>
+        <div className={styles.inputRow}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onFocus={() => {
+              if (lastUnreadMessageId) {
+                socket.emit('message seen', { messageId: lastUnreadMessageId });
+                setLastUnreadMessageId(null);
+              }
+              socket.emit('user_typing', {
+                sessionId,
+                userName: currentUser.user_name,
+                userId: currentUser.id
+              });
+            }}
+            onBlur={() => {
+              socket.emit('user_stopped_typing', {
+                sessionId,
+                userId: currentUser.id
+              });
+            }}
+            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+            className={styles.inputField}
+            placeholder="כתוב הודעה..."
+          />
+          <button className={styles.sendButton} onClick={handleSendMessage}>שלח</button>
+        </div>
+
+        <div aria-live="polite" style={{ position: 'absolute', left: '-9999px' }}>
+          {liveMessage}
+        </div>
       </div>
     </>
-    );
+  );
 }

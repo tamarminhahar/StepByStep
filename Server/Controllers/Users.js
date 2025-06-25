@@ -1,5 +1,5 @@
 
-import { checkUserExistenceService, addUser, loginUser, addBereavedProfile, addSupporterProfile, performLogout, getUsersByRole } from '../Services/Users.js';
+import { checkUserExistenceService, addUser, loginUser, addBereavedProfile, addSupporterProfile, performLogout, getUsersByRole, updateOnlineStatus } from '../Services/Users.js';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../Middlewares/generateToken.js';
 import { createMemorialEventsForUser } from '../Services/memorialDates.js';
@@ -30,7 +30,6 @@ export async function getAvailableUsers(req, res) {
     res.status(500).json({ error: 'Failed to fetch available users' });
   }
 }
-
 
 export const addUserTo = async (req, res) => {
   try {
@@ -67,6 +66,11 @@ export async function loginUserTo(req, res) {
   }
   const token = generateToken(user);
   const { password_hash, ...safeUser } = user;
+  await updateOnlineStatus(safeUser.id, true);
+
+  const io = req.app.get('io');
+  io.emit('user_status_change', { userId: safeUser.id, isOnline: true });
+
   res
     .cookie('token', token, {
       httpOnly: true,
@@ -77,8 +81,6 @@ export async function loginUserTo(req, res) {
     .json({
       user: { id: safeUser.id, role: safeUser.role, user_name: safeUser.user_name }
     });
-
-
 }
 
 export async function createBereavedProfile(req, res) {
@@ -113,9 +115,14 @@ export async function createSupporterProfile(req, res) {
 }
 
 
-export const logoutUser = (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
     performLogout(res);
+    await updateOnlineStatus(req.user.id, false);
+
+    const io = req.app.get('io');
+    io.emit('user_status_change', { userId: req.user.id, isOnline: false });
+
     res.status(200).json({ message: 'Logged out successfully' });
   } catch (err) {
     console.error('Error in logoutUser:', err);
