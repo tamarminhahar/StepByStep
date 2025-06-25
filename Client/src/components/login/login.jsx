@@ -1,57 +1,8 @@
 
-// import React, { useRef, useState } from 'react';
-// import styles from './login.module.css';
-// import { useNavigate, Link } from 'react-router-dom';
-// import ApiClientRequests from '../../ApiClientRequests';
-// import { toast } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-
-// export default function Login() {
-//     const nameRef = useRef();
-//     const passwordRef = useRef();
-//     const navigate = useNavigate();
-//     const [error, setError] = useState(null);
-
-//     const handleLoginSubmit = async (event) => {
-//         event.preventDefault();
-//         try {
-//             const data = await ApiClientRequests.postRequest('users/login', {
-//                 name: nameRef.current.value,
-//                 password: passwordRef.current.value,
-//             });
-
-//             toast.success('התחברת בהצלחה!');
-//             navigate('/home');
-
-//         } catch (err) {
-//             console.error(err);
-//             toast.error('שם משתמש או סיסמה שגויים, נסה שוב');
-//         }
-//     };
-
-//     if (error) return <p>שגיאה: {error}</p>;
-
-//     return (
-//         <div className={styles.loginForm}>
-//             <div id="container" className={styles.container}>
-//                 <h3 className={styles.title}>התחברות</h3>
-//                 <form onSubmit={handleLoginSubmit} className={styles.form}>
-//                     <input ref={nameRef} type="text" placeholder="שם משתמש" required className={styles.input} />
-//                     <input ref={passwordRef} type="password" placeholder="סיסמה" required className={styles.input} />
-//                     <button type="submit" className={styles.button}>שליחה</button>
-//                     <div className={styles.linkContainer}>
-//                         <span>פעם ראשונה כאן? </span>
-//                         <Link to="/register" className={styles.link}>להרשמה</Link>
-//                     </div>
-//                 </form>
-//             </div>
-//         </div>
-//     );
-// }
 import React, { useState } from 'react';
 import styles from './login.module.css';
 import { useNavigate, Link } from 'react-router-dom';
-import ApiClientRequests from '../../ApiClientRequests';
+import ApiClientRequests from '../services/ApiClientRequests'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { z } from 'zod';

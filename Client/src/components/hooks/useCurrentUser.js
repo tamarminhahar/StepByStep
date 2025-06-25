@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import APIRequests from "../services/ApiClientRequests";
 
 export function useCurrentUser() {
     const [currentUser, setCurrentUser] = useState(null);
@@ -7,13 +8,7 @@ export function useCurrentUser() {
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
-                const response = await fetch('http://localhost:3000/users/current', {
-                    credentials: 'include',
-                });
-
-                if (!response.ok) throw new Error('Failed to fetch current user');
-
-                const user = await response.json();
+                const user = await APIRequests.getRequest("users/current");
                 setCurrentUser(user);
             } catch (err) {
                 console.error(err);

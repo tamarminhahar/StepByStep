@@ -2,9 +2,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
-import ApiClientRequests from '../../ApiClientRequests';
+import ApiClientRequests from '../services/ApiClientRequests'
 import styles from './chatStyle/ChatWindow.module.css';
-import { socket } from '../../socket';
+import  socket  from '../services/ApiClientRequests';
 import Nav from '../nav/nav';
 
 export default function ChatWindow() {

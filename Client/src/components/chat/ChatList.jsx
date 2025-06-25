@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { toast } from 'react-toastify';
-import ApiClientRequests from '../../ApiClientRequests';
+import ApiClientRequests from '../services/ApiClientRequests'
 import styles from './chatStyle/ChatList.module.css';
 import Nav from '../nav/nav.jsx';
 import { socket } from '../../socket';

@@ -1,6 +1,6 @@
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { socket } from '../socket'; 
+import { socket } from './services/socket' 
 import { useEffect } from 'react';
 import Home from '../components/home/home';
 import Login from './login/login';

@@ -4,7 +4,7 @@ import styles from './Comments.module.css';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { toast } from 'react-toastify';
 import { z } from 'zod';
-import ApiClientRequests from '../../ApiClientRequests';
+import ApiClientRequests from '../services/ApiClientRequests'
 
 export default function Comments({ postId }) {
     const { currentUser } = useCurrentUser();

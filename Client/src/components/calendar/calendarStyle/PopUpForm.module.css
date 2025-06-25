@@ -1,0 +1,87 @@
+
+.fc,
+.fc-view,
+.fc-view-harness,
+.calendarWrapper {
+  z-index: 1 !important;
+  position: relative !important;
+}
+
+.calendarPageContainer {
+  position: relative;
+  padding: 20px;
+  z-index: 1; /* בסיסי, כדי שלא יכסה פופאפ */
+}
+
+.calendarWrapper {
+  position: relative;
+  z-index: 1; /* כדי שהלוח עצמו לא "ידחף" מעל הפופאפ */
+}
+
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5000; /* ✅ מעל FullCalendar */
+}
+
+
+
+.formContent {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  font-family: sans-serif;
+  position: relative; /* ✅ מוודא שמעל אלמנטים אחרים */
+  z-index: 6000;       /* ✅ גם כאן ליתר ביטחון */
+}
+.formContent label {
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+  color: #333; /* ✅ צבע כהה ללייבלים */
+}
+
+
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.participationButtons button {
+  margin-inline-end: 0.5rem;
+}
+
+/* ✅ תוספת לעיצוב טופס */
+.formContent label {
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+
+.formContent input[type="text"],
+.formContent input[type="date"],
+.formContent input[type="color"],
+.formContent textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}

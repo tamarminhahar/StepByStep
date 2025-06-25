@@ -1,6 +1,6 @@
 import express from 'express';
 import * as calendarController from '../Controllers/Calendar.js';
-import { authenticateJWT } from '../Middlewares/authenticateJWT.js'; 
+import { authenticateJWT } from '../Middlewares/authenticateJWT.js'; // Adjust the path as necessary
 
 
 const router = express.Router();
