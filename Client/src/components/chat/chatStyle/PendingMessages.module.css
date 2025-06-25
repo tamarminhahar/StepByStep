@@ -1,0 +1,63 @@
+.pendingContainer {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.pendingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.refreshBtn {
+  background-color: #007bff;
+  color: white;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  font-weight: bold;
+}
+
+.refreshBtn:hover {
+  background-color: #0056b3;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  color: #777;
+  font-style: italic;
+}
+
+.messageList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.messageItem {
+  background-color: #f5f8fc;
+  border: 1px solid #dde4f1;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.badge {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 10px 14px;
+  margin: 10px 0;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

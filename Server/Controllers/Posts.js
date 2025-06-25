@@ -1,45 +1,55 @@
 
 import * as postService from '../Services/Posts.js';
 
- export async function getPosts(req, res) {
-     const posts = await postService.getAllPosts();
-     res.json(posts);
- }
+export async function getPosts(req, res) {
+    const userId = req.user.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
-export async function createPost(req, res) {
-    // const { title, body, media_url, grief_tag } = req.body;
-    // const postId = await postService.addPost(req.user.id, title, body, media_url, grief_tag);
-//     const { user_id, title, body, media_url, grief_tag } = req.body;
-// const postId = await postService.addPost(user_id, title, body, media_url, grief_tag);
-
-const { title, body, media_url, grief_tag } = req.body;
-const user_id = req.user.id; // לקרוא מה־JWT, לא מה־body
-
-const postId = await postService.addPost(user_id, title, body, media_url, grief_tag);
-
-const posts = await postService.getPostsByUser(user_id);
-const addedPost = posts.find(p => p.id === postId);
-res.status(201).json(addedPost);
+    try {
+        const posts = await postService.getPostsPaginated(userId, page, limit);
+        res.json(posts);
+    } catch (err) {
+        console.error('Error fetching paginated posts:', err);
+        res.status(500).json({ error: 'Failed to fetch posts' });
+    }
 }
 
-// export async function getPostById(req, res) {
-//     const post = await postService.getPostById(req.params.postId);
-//     res.json(post);
-// }
+export async function createPost(req, res) {
+    const { title, body, post_type } = req.body;
+    const user_id = req.user.id; // מה־JWT
+    const media_url = req.file ? req.file.path : null;
 
-// export async function deletePost(req, res) {
-//        const userId = req.query.user_id; 
-//     const success = await postService.deletePost(req.params.postId, userId);
-//     res.json({ success });
-// }
+    try {
+        const postId = await postService.addPost(user_id, title, body, media_url, post_type);
+
+        // const posts = await postService.getPostsByUser(user_id);
+        // const addedPost = posts.find(p => p.id === postId);
+       const addedPost = await postService.getPostByIdWithDetails(postId, user_id);
+
+        res.status(201).json(addedPost);
+    } catch (err) {
+console.error('Error creating post:', {
+    message: err.message,
+    stack: err.stack,
+    name: err.name,
+    code: err.code,
+    response: err.response,
+    error: err.error,
+    errors: err.errors
+});
+
+    if (err.message && err.message.includes('Invalid file format')) {
+        res.status(400).json({ error: 'Unsupported media format. Please upload image or mp4/webm video.' });
+    } else {
+        res.status(500).json({ error: 'Failed to create post' });
+    }
+}
+}
 
 export async function deletePost(req, res) {
     try {
-        const userId = req.query.user_id;
-        if (!userId) {
-            return res.status(400).json({ error: 'user_id is required' });
-        }
-
+ const userId = req.user.id;
         const success = await postService.deletePost(req.params.postId, userId);
 
         if (!success) {
@@ -54,18 +64,72 @@ export async function deletePost(req, res) {
 }
 
 export async function updatePost(req, res) {
-    const { title, body, user_id } = req.body;
-    const postId = req.params.postId;
-
     try {
-        const updatedPost = await postService.updatePost(postId, user_id, title, body);
-        res.json(updatedPost);
+        const postId = req.params.id;
+        const user_id = req.user.id; 
+        const { title, body, post_type, removeMedia } = req.body;
+
+        console.log('BODY:', req.body);
+        console.log('FILE:', req.file);
+
+        // נביא את הפוסט מה־DB כדי לדעת מה ה־media_url הקיים
+        const posts = await postService.getPostsByUser(user_id);
+const existingPost = await postService.getPostById(postId);
+
+        if (!existingPost) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        // נתחיל מה־media_url הקיים
+        let media_url = existingPost.media_url;
+
+        // שלב ראשון → אם ביקשו להסיר מדיה → נשים null
+        if (removeMedia === 'true') {
+            media_url = null;
+        }
+
+        // שלב שני → אם יש קובץ חדש → זה גובר על removeMedia → נעדכן ל־path החדש
+        if (req.file) {
+            media_url = req.file.path;
+        }
+
+        // עכשיו נעדכן את הפוסט ב־DB
+        await postService.updatePost({
+            id: postId,
+            user_id,
+            title,
+            body,
+            post_type,
+            media_url,
+        });
+
+        // נחזיר את הפוסט המעודכן
+        const updatedPosts = await postService.getPostsByUser(user_id);
+        const updatedPost = updatedPosts.find(p => p.id === Number(postId));
+
+        res.status(200).json(updatedPost);
+
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to update post' });
+        console.error('Error in updatePost:', err);
+        res.status(500).json({ message: 'Internal server error' });
     }
 }
 
+export async function getPostById(req, res) {
+    const postId = req.params.id;
+    const userId = req.user.id; // מניח שיש לך משתמש מחובר דרך jwt או session
+
+    try {
+        const post = await postService.getPostByIdWithDetails(postId, userId);
+        if (!post) {
+            return res.status(404).json({ error: 'הפוסט לא נמצא' });
+        }
+        res.json(post);
+    } catch (err) {
+        console.error('שגיאה בשליפת פוסט בודד:', err);
+        res.status(500).json({ error: 'שגיאה בשרת' });
+    }
+}
 
 
 // Likes
@@ -77,15 +141,4 @@ export async function addLikeToPost(req, res) {
 export async function removeLikeFromPost(req, res) {
     await postService.removeLikeFromPost(req.params.postId, req.user.id);
     res.json({ message: 'Like removed' });
-}
-
-// Follows
-export async function addFollowToPost(req, res) {
-    await postService.addFollowToPost(req.params.postId, req.user.id);
-    res.status(201).json({ message: 'Follow added' });
-}
-
-export async function removeFollowFromPost(req, res) {
-    await postService.removeFollowFromPost(req.params.postId, req.user.id);
-    res.json({ message: 'Follow removed' });
 }

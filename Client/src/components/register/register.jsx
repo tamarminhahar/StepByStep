@@ -1,104 +1,248 @@
-import React, { useRef, useState } from 'react';
+// import React, { useRef, useState } from 'react';
+// import { useNavigate, Link } from 'react-router-dom';
+// import styles from './register.module.css';
+// import ApiClientRequests from '../../ApiClientRequests';
+// import { toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+
+// export default function Register() {
+//     const nameRef = useRef();
+//     const emailRef = useRef();
+//     const passwordRef = useRef();
+//     const passwordVerRef = useRef();
+//     const roleRef = useRef();
+//     const navigate = useNavigate();
+//     const [error, setError] = useState(null);
+
+//     const verifyPassword = () => {
+//         return passwordRef.current.value === passwordVerRef.current.value;
+//     };
+
+//     const checkUserOrEmailExists = async (username, email) => {
+//         try {
+//             const res = await ApiClientRequests.postRequest('users/check-existence', {
+//                 username,
+//                 email
+//             });
+
+//             return res; 
+
+//         } catch (err) {
+//             console.error(err);
+//             toast.error('שגיאה בבדיקת זמינות המשתמש');
+//             return { usernameExists: false, emailExists: false };
+//         }
+//     };
+
+//     const handleRegisterSubmit = async (event) => {
+//         event.preventDefault();
+
+//         const name = nameRef.current.value;
+//         const email = emailRef.current.value;
+
+//         const { usernameExists, emailExists } = await checkUserOrEmailExists(name, email);
+
+//         if (usernameExists) {
+//             toast.error('שם המשתמש כבר קיים במערכת');
+//             return;
+//         }
+
+//         if (emailExists) {
+//             toast.error('אימייל זה כבר רשום במערכת');
+//             return;
+//         }
+
+//         if (!verifyPassword()) {
+//             toast.error('הסיסמאות אינן תואמות. נסה שוב.');
+//             passwordVerRef.current.value = '';
+//             return;
+//         }
+
+//         const newUser = {
+//             name,
+//             email,
+//             password: passwordVerRef.current.value,
+//             role: roleRef.current.value.toLowerCase(),
+//         };
+
+//         const path = roleRef.current.value === 'bereaved'
+//             ? '/bereavedDetails'
+//             : '/supporterDetails';
+
+//         navigate(path, { state: { newUser } });
+//     };
+
+//     if (error) return <p>שגיאה: {error}</p>;
+
+//     return (
+//         <>
+//             <h3 className={styles.title}>חשבון חדש</h3>
+//             <div className={styles.steps}><strong>1</strong> / 2 שלבים</div>
+//             <form className={styles.container} onSubmit={handleRegisterSubmit}>
+//                 <input className={styles.input} ref={nameRef} type="text" placeholder="שם מלא" required />
+//                 <input className={styles.input} ref={emailRef} type="email" placeholder="אימייל" required />
+//                 <input className={styles.input} ref={passwordRef} type="password" placeholder="סיסמה" required />
+//                 <input className={styles.input} ref={passwordVerRef} type="password" placeholder="אימות סיסמה" required />
+//                 <select className={styles.input} ref={roleRef} required>
+//                     <option value="bereaved">אבל</option>
+//                     <option value="supporter">תומך</option>
+//                 </select>
+//                 <button className={styles.button} type="submit">המשך</button>
+//                 <div className={styles.linkContainer}>כבר יש לך חשבון?</div>
+//                 <Link className={styles.link} to="/login">התחברות</Link>
+//             </form>
+//         </>
+//     );
+// }
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './register.module.css';
+import ApiClientRequests from '../../ApiClientRequests';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { z } from 'zod';
 
-// Sign Up Form
+const schema = z.object({
+    name: z.string().min(2, 'יש להזין שם משתמש תקין'),
+    email: z.string().email('אימייל לא תקין'),
+    password: z.string().min(6, 'סיסמה חייבת לכלול לפחות 6 תווים'),
+    passwordVer: z.string(),
+    role: z.enum(['bereaved', 'supporter'], 'יש לבחור תפקיד'),
+}).refine((data) => data.password === data.passwordVer, {
+    message: 'הסיסמאות אינן תואמות',
+    path: ['passwordVer']
+});
+
 export default function Register() {
-    const nameRef = useRef();
-    const emailRef = useRef();
-    const passwordRef = useRef();
-    const passwordVerRef = useRef();
-    const roleRef = useRef();
-    const alertDivRef = useRef();
     const navigate = useNavigate();
-    const [error, setError] = useState(null);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        passwordVer: '',
+        role: '',
+    });
 
-    // Function to display message in the alert div
-    const manageMessages = (message) => {
-        alertDivRef.current.innerText = message;
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Function to check if the username already exists
-    const checkUserExists = async (user_name) => {
+    const checkUserOrEmailExists = async (username, email) => {
         try {
-            const response = await fetch(`http://localhost:3000/users/${user_name}`, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
+            const res = await ApiClientRequests.postRequest('users/check-existence', {
+                username,
+                email
             });
-    if (response.status === 404) {
-      return false; 
-    }
-
-    if (response.status === 409) {
-      return true;
-    }
-            if (!response.ok) {
-                throw new Error('Failed to check user existence');
-            }
-
-            return true; // User exists
-        } catch (error) {
-            setError(error.message);
-            return false;
+            return res;
+        } catch (err) {
+            toast.error('שגיאה בבדיקת זמינות המשתמש');
+            return { usernameExists: false, emailExists: false };
         }
     };
 
-    // Function to verify that password and verify password match
-    const verifyPassword = () => {
-        return passwordRef.current.value === passwordVerRef.current.value;
-    };
-
-    // Submit handler for the register form
-    const handleRegisterSubmit = (event) => {
+    const handleRegisterSubmit = async (event) => {
         event.preventDefault();
 
-        checkUserExists(nameRef.current.value).then((exists) => {
-            if (exists) {
-                manageMessages('User already exists');
-            } else {
-                if (verifyPassword()) {
-                    let newUser = {
-                        name: nameRef.current.value,
-                        email: emailRef.current.value,
-                        password: passwordVerRef.current.value,
-                        role: roleRef.current.value.toLowerCase(),
-
-                    };
-                      
-            const path =
-                        roleRef.current.value === 'bereaved'
-                            ? '/bereavedDetails'
-                            : '/supporterDetails';
-
-                    navigate(path, { state: { newUser} });
-            } else {
-                manageMessages('You have to use the same password. Please recheck!');
-                passwordVerRef.current.value = '';
-            }
+        const validation = schema.safeParse(formData);
+        if (!validation.success) {
+            const fieldErrors = {};
+            validation.error.errors.forEach(err => {
+                fieldErrors[err.path[0]] = err.message;
+            });
+            setErrors(fieldErrors);
+            return;
         }
-        });
-    };
 
-    if (error) return <p>Error: {error}</p>;
+        const { usernameExists, emailExists } = await checkUserOrEmailExists(formData.name, formData.email);
+        if (usernameExists) {
+            toast.error('שם המשתמש כבר קיים במערכת');
+            return;
+        }
+        if (emailExists) {
+            toast.error('אימייל זה כבר רשום במערכת');
+            return;
+        }
+
+        const newUser = {
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            role: formData.role,
+        };
+        const path = formData.role === 'bereaved'
+            ? '/bereavedDetails'
+            : '/supporterDetails';
+
+        navigate(path, { state: { newUser } });
+    };
 
     return (
         <>
-            <h3 className={styles.title}>New Account</h3>
-            <div className={styles.steps}><strong>1</strong> / 2 STEPS</div>
+            <h3 className={styles.title}>חשבון חדש</h3>
+            <div className={styles.steps}><strong>1</strong> / 2 שלבים</div>
             <form className={styles.container} onSubmit={handleRegisterSubmit}>
-                <input className={styles.input} ref={nameRef} type="text" placeholder="name" required />
-                <input className={styles.input} ref={emailRef} type="email" placeholder="email" required />
-                <input className={styles.input} ref={passwordRef} type="password" placeholder="password" required />
-                <input className={styles.input} ref={passwordVerRef} type="password" placeholder="verify password" required />
-                <select className={styles.input} ref={roleRef} required>
-                    <option value="bereaved">Bereaved</option>
-                    <option value="supporter">Supporter</option>
-                    <option value="admin">Admin</option>
+                <input
+                    className={styles.input}
+                    name="name"
+                    type="text"
+                    placeholder="שם מלא"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                />
+                {errors.name && <p className={styles.errorMessage}>{errors.name}</p>}
+
+                <input
+                    className={styles.input}
+                    name="email"
+                    type="email"
+                    placeholder="אימייל"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                />
+                {errors.email && <p className={styles.errorMessage}>{errors.email}</p>}
+
+                <input
+                    className={styles.input}
+                    name="password"
+                    type="password"
+                    placeholder="סיסמה"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                />
+                {errors.password && <p className={styles.errorMessage}>{errors.password}</p>}
+
+                <input
+                    className={styles.input}
+                    name="passwordVer"
+                    type="password"
+                    placeholder="אימות סיסמה"
+                    value={formData.passwordVer}
+                    onChange={handleChange}
+                    required
+                />
+                {errors.passwordVer && <p className={styles.errorMessage}>{errors.passwordVer}</p>}
+
+                <select
+                    className={styles.input}
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="" disabled>בחר/י</option>
+                    <option value="bereaved">אבל</option>
+                    <option value="supporter">תומך</option>
                 </select>
-                <div className={styles.alert} ref={alertDivRef}></div>
-                <button className={styles.button} type="submit">submit</button>
-                <div className={styles.linkContainer}>Already have an account?</div>
-                <Link className={styles.link} to="/login">Login</Link>
+                {errors.role && <p className={styles.errorMessage}>{errors.role}</p>}
+
+                <button className={styles.button} type="submit">המשך</button>
+                <div className={styles.linkContainer}>כבר יש לך חשבון?</div>
+                <Link className={styles.link} to="/login">התחברות</Link>
             </form>
         </>
     );

@@ -1,0 +1,199 @@
+/* /* מיקום ולייאאוט כללי
+.notificationContainer {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background-color: #f9fbfe;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+}
+
+
+.notificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.notificationTitle {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.notificationCloseButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.notificationCloseButton:hover {
+  color: #000;
+}
+
+
+.notificationItem,
+.notification {
+  background-color: #fff;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notificationItem:hover,
+.notification:hover {
+  background-color: #e8eef6;
+}
+
+.unread {
+  background-color: #fff9d1;
+  font-weight: bold;
+}
+
+.read {
+  background-color: #f0f0f0;
+  color: #777;
+  opacity: 0.7;
+}
+
+.readCheck {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: green;
+}
+
+.markAllButton {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.markAllButton:hover {
+  background-color: #ccc;
+} 
+   */
+.notificationContainer {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  background-color: #f9fbfe;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  border-radius: 0 12px 12px 0;
+  font-family: sans-serif;
+}
+
+.notificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.notificationTitle {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.notificationCloseButton {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #888;
+  margin-right: 8px;
+}
+
+.notificationCloseButton:hover {
+  color: #000;
+}
+
+.notificationItem,
+.notification {
+  background-color: #fff;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: background-color 0.3s, opacity 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notificationItem:hover,
+.notification:hover {
+  background-color: #eaf3ff;
+}
+
+.unread {
+  background-color: #fff9d1;
+  font-weight: bold;
+}
+
+.read {
+  background-color: #f0f0f0;
+  color: #777;
+  opacity: 0.75;
+}
+
+.readCheck {
+  font-size: 1rem;
+  color: #34c759;
+  margin-right: 8px;
+}
+
+.markAllButton {
+  background-color: #dde3ec;
+  border: none;
+  padding: 6px 12px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #333;
+  transition: background 0.3s;
+}
+
+.markAllButton:hover {
+  background-color: #c7d3e0;
+}
+
+.emptyText {
+  text-align: center;
+  font-style: italic;
+  color: #999;
+  margin-top: 2rem;
+}

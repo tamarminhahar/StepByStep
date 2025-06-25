@@ -1,70 +1,133 @@
 
-import React, { useRef, useState } from 'react';
+// import React, { useRef, useState } from 'react';
+// import styles from './login.module.css';
+// import { useNavigate, Link } from 'react-router-dom';
+// import ApiClientRequests from '../../ApiClientRequests';
+// import { toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
+
+// export default function Login() {
+//     const nameRef = useRef();
+//     const passwordRef = useRef();
+//     const navigate = useNavigate();
+//     const [error, setError] = useState(null);
+
+//     const handleLoginSubmit = async (event) => {
+//         event.preventDefault();
+//         try {
+//             const data = await ApiClientRequests.postRequest('users/login', {
+//                 name: nameRef.current.value,
+//                 password: passwordRef.current.value,
+//             });
+
+//             toast.success('התחברת בהצלחה!');
+//             navigate('/home');
+
+//         } catch (err) {
+//             console.error(err);
+//             toast.error('שם משתמש או סיסמה שגויים, נסה שוב');
+//         }
+//     };
+
+//     if (error) return <p>שגיאה: {error}</p>;
+
+//     return (
+//         <div className={styles.loginForm}>
+//             <div id="container" className={styles.container}>
+//                 <h3 className={styles.title}>התחברות</h3>
+//                 <form onSubmit={handleLoginSubmit} className={styles.form}>
+//                     <input ref={nameRef} type="text" placeholder="שם משתמש" required className={styles.input} />
+//                     <input ref={passwordRef} type="password" placeholder="סיסמה" required className={styles.input} />
+//                     <button type="submit" className={styles.button}>שליחה</button>
+//                     <div className={styles.linkContainer}>
+//                         <span>פעם ראשונה כאן? </span>
+//                         <Link to="/register" className={styles.link}>להרשמה</Link>
+//                     </div>
+//                 </form>
+//             </div>
+//         </div>
+//     );
+// }
+import React, { useState } from 'react';
 import styles from './login.module.css';
 import { useNavigate, Link } from 'react-router-dom';
+import ApiClientRequests from '../../ApiClientRequests';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { z } from 'zod';
+
+const loginSchema = z.object({
+    name: z.string().min(2, 'יש להזין שם משתמש תקין'),
+    password: z.string().min(6, 'סיסמה חייבת לכלול לפחות 4 תווים')
+});
 
 export default function Login() {
-    const nameRef = useRef();
-    const passwordRef = useRef();
-    const alertDivRef = useRef();
     const navigate = useNavigate();
-    const [error, setError] = useState(null);
+    const [formData, setFormData] = useState({ name: '', password: '' });
+    const [errors, setErrors] = useState({});
 
-    const manageMessages = (message) => {
-        if (alertDivRef.current) {
-            alertDivRef.current.innerText = message;
-        }
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const loginUser = async (username, password) => {
-        try {
-            const response = await fetch('http://localhost:3000/users/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: username,
-                    password: password,
-                }),
-                credentials: 'include', 
-            });
-
-            if (!response.ok) {
-                return { ok: false };
-            }
-
-            const data = await response.json();
-            return { ok: true, user: data.user }; 
-        } catch (error) {
-            console.error(error);
-            return { ok: false };
-        }
-    };
-
-    const handleLoginSubmit = (event) => {
+    const handleLoginSubmit = async (event) => {
         event.preventDefault();
-        loginUser(nameRef.current.value, passwordRef.current.value).then((result) => {
-            if (!result.ok) {
-                manageMessages('Username or password incorrect, try again');
-            } else {
-        window.location.href = '/home';
-            }
-        });
-    };
 
-    if (error) return <p>Error: {error}</p>;
+        const validation = loginSchema.safeParse(formData);
+        if (!validation.success) {
+            const fieldErrors = {};
+            validation.error.errors.forEach(err => {
+                fieldErrors[err.path[0]] = err.message;
+            });
+            setErrors(fieldErrors);
+            return;
+        }
+
+        try {
+            const data = await ApiClientRequests.postRequest('users/login', {
+                name: formData.name,
+                password: formData.password,
+            });
+            navigate('/home');
+
+        } catch (err) {
+            console.error(err);
+            toast.error('שם משתמש או סיסמה שגויים, נסה שוב');
+        }
+    };
 
     return (
         <div className={styles.loginForm}>
             <div id="container" className={styles.container}>
-                <h3 className={styles.title}>Login</h3>
+                <h3 className={styles.title}>התחברות</h3>
                 <form onSubmit={handleLoginSubmit} className={styles.form}>
-                    <input ref={nameRef} type="text" placeholder="name" required className={styles.input} />
-                    <input ref={passwordRef} type="password" placeholder="password" required className={styles.input} />
-                    <div ref={alertDivRef} className={styles.alert}></div>
-                    <button type="submit" className={styles.button}>submit</button>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="שם משתמש"
+                        className={styles.input}
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
+                    {errors.name && <p className={styles.errorMessage}>{errors.name}</p>}
+
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="סיסמה"
+                        className={styles.input}
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    {errors.password && <p className={styles.errorMessage}>{errors.password}</p>}
+
+                    <button type="submit" className={styles.button}>שליחה</button>
+
                     <div className={styles.linkContainer}>
-                        <span>First time? </span>
-                        <Link to="/register" className={styles.link}>Register</Link>
+                        <span>פעם ראשונה כאן? </span>
+                        <Link to="/register" className={styles.link}>להרשמה</Link>
                     </div>
                 </form>
             </div>

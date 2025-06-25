@@ -1,0 +1,39 @@
+.container {
+  padding: 40px;
+  text-align: center;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #1e1e2f;
+  border-radius: 20px;
+  width: 220px;
+  padding: 25px;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 15px;
+}

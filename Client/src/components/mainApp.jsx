@@ -1,54 +1,27 @@
 
-// import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-
-// import Home from './home'
-// import Login from './login/login'
-// import SupporterDetails from './userDetails/supporterDetails'
-// import BereavedDetails from './userDetails/BereavedDetails'
-// import Calendar from './Calendar/Calendar'; 
-
-// import PostsList from './postsList/PostsList'
-
-// // import Comments from './comments/comments'
-// import { useCurrentUser } from './userProvider'
-// import Register from './register/register'
-// import NoPage from "./noPage"
-
-// function MainApp() {
-//   const { currentUser } = useCurrentUser();
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-//         <Route path="/" element={<Navigate to="/login" replace />} />
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/register" element={<Register />} />
-//         <Route path='/home' element={currentUser.id !== -1 ? <Home /> : <Navigate to="/login" />} />
-//         <Route path='/supporterDetails' element={<SupporterDetails />} />
-//         <Route path='/bereavedDetails' element={<BereavedDetails />} />
-        
-// <Route path='/users/:userId/posts' element={<PostsList />} />
-//     <Route path='/Calendar' element={<Calendar />} />
-
-
-     
-//         <Route path="*" element={<NoPage />} />
-//       </Routes>
-//     </BrowserRouter >
-//   )
-// }
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-import Home from './home';
+import { socket } from '../socket'; 
+import { useEffect } from 'react';
+import Home from '../components/home/home';
 import Login from './login/login';
 import SupporterDetails from './userDetails/supporterDetails';
 import BereavedDetails from './userDetails/bereavedDetails';
-import Calendar from './Calendar/Calendar';
-import PostsList from './postsList/PostsList';
+import Calendar from './Calendar/CalendarPage';
+import PostsList from './posts/PostsList';
 import Register from './register/register';
 import NoPage from "./noPage";
-
+import ChatSelector from './chat/ChatSelector';
+import ChatList from './chat/ChatList';
+import ChatWindow from './chat/ChatWindow';
+import NotificationPanel from "./notification/NotificationPanel";
+import { useCurrentUser } from "./hooks/useCurrentUser";
 function MainApp() {
+    const { currentUser, loading } = useCurrentUser();
+    useEffect(() => {
+        if (!loading && currentUser?.id) {
+            socket.emit('user_connected', { userId: currentUser.id });
+        }
+    }, [loading, currentUser]);
     return (
         <BrowserRouter>
             <Routes>
@@ -56,12 +29,22 @@ function MainApp() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 
-                {/* Protected routes — don't block in the router! The server will block if no valid token */}
+                {/* דפים ראשיים */}
                 <Route path="/home" element={<Home />} />
+                <Route path="/posts" element={<PostsList />} />
+                <Route path="/posts/new" element={<PostsList />} />
+                <Route path="/posts/edit" element={<PostsList />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/notification" element={<NotificationPanel mode="panel" />} />
+                {/* אזורי פרופיל */}
                 <Route path="/supporterDetails" element={<SupporterDetails />} />
                 <Route path="/bereavedDetails" element={<BereavedDetails />} />
-                <Route path="/users/:userId/posts" element={<PostsList />} />
-                <Route path="/Calendar" element={<Calendar />} />
+
+                {/* צ'אט */}
+                <Route path="/chat" element={<ChatSelector />} />
+                <Route path="/chat/select" element={<ChatList />} />
+                <Route path="/chat/session" element={<ChatWindow />} />
+<Route path="/chat/session/:userName" element={<ChatWindow />} />
 
                 <Route path="*" element={<NoPage />} />
             </Routes>

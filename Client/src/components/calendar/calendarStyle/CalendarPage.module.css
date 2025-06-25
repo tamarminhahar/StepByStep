@@ -1,0 +1,49 @@
+.calendarWrapper {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #f7f9fc;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.fc {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.fc-daygrid-event {
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 2px 6px;
+  font-weight: bold;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.fc-button {
+  background-color: #4facfe;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-weight: bold;
+  color: #fff;
+  transition: background 0.2s ease-in-out;
+}
+
+.fc-button:hover {
+  background-color: #00c6ff;
+}
+
+.fc-daygrid-day-number {
+  color: #333;
+}
+
+.fc-day-today {
+  background-color: #e1f5ff;
+}

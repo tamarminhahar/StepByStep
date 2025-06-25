@@ -1,0 +1,30 @@
+/* Home.module.css */
+
+.chatToggleBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.chatPopupBox {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 300px;
+  max-height: 400px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  z-index: 998;
+  overflow: hidden;
+}
+.pageWrapper {
+  padding-top: 60px; /* בדיוק כמו גובה ה-nav */
+}
