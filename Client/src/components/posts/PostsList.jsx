@@ -327,6 +327,9 @@ const refreshSinglePost = (partialUpdate) => {
             if (sortCriteria === "popular") return (b.likes_count || 0) - (a.likes_count || 0);
             return 0;
         });
+useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}, [filterPostType, filterMyPosts, sortCriteria]);
 
     if (loading) return <p>Loading user...</p>;
     if (!currentUser) return <p>You must be logged in.</p>;

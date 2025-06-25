@@ -126,3 +126,9 @@
 .deleteButton:hover {
   color: red;
 }
+.chatContainer {
+  margin-top: 20px; /* Adds space between Nav and chat window */
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px); /* Optional: Adjusts to full screen minus Nav height */
+}

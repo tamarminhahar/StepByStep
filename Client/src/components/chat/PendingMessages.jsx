@@ -1,7 +1,7 @@
 
 
 import { useEffect, useState } from 'react';
-import { getPendingMessages } from './chatService'; // שימוש נכון בשירות
+import ApiClientRequests from '../../ApiClientRequests';
 import styles from './chatStyle/PendingMessages.module.css'; // אופציונלי: יצירת קובץ CSS
 
 export default function PendingMessages() {
@@ -10,7 +10,7 @@ export default function PendingMessages() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const messages = await getPendingMessages();
+        const messages = await ApiClientRequests.getRequest(`chat/pending`);
         setCount(messages.length);
       } catch (err) {
         console.error('שגיאה בשליפת הודעות שלא נקראו:', err);
@@ -24,7 +24,7 @@ export default function PendingMessages() {
 
   return (
     <div className={styles.badge}>
-      📨 יש לך {count} הודעות חדשות בצ'אט
+      יש לך {count} הודעות חדשות בצ'אט
     </div>
   );
 }

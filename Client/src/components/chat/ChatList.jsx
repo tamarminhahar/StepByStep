@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { toast } from 'react-toastify';
-import { getPendingMessages, getAvailableUsersByMode } from './chatService';
+import ApiClientRequests from '../../ApiClientRequests';
 import styles from './chatStyle/ChatList.module.css';
 import Nav from '../nav/nav.jsx';
 
@@ -24,7 +24,7 @@ export default function ChatList() {
 
     const fetchUsers = async () => {
       try {
-        const users = await getAvailableUsersByMode(mode);
+const users = await ApiClientRequests.getRequest(`users/available?mode=${mode}`);
         const filtered = users.filter((u) => u.id !== currentUser.id);
         setUsers(filtered);
       } catch (err) {
@@ -37,7 +37,7 @@ export default function ChatList() {
 
     const fetchPending = async () => {
       try {
-        const pending = await getPendingMessages();
+const pending = await ApiClientRequests.getRequest(`chat/pending`);
         const map = {};
         console.log(pending)
         pending.forEach((msg) => {

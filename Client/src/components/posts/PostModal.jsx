@@ -12,6 +12,7 @@ function PostModal({ onSave, initialPost = null }) {
     const [mediaFile, setMediaFile] = useState(null);
     const [removeMedia, setRemoveMedia] = useState(false);
     const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (initialPost) {
@@ -50,7 +51,46 @@ function PostModal({ onSave, initialPost = null }) {
                 ),
         });
 
+    // const handleSubmit = async () => {
+    //     const schema = getPostSchema(!initialPost);
+    //     const result = schema.safeParse({
+    //         title,
+    //         body,
+    //         postType,
+    //         mediaFile,
+    //     });
+
+    //     if (!result.success) {
+    //         const errorMessages = result.error.errors.map((e) => e.message).join(' | ');
+    //         toast.error(errorMessages);
+    //         return;
+    //     }
+
+    //     if (!hasChanges()) {
+    //         toast.info('לא בוצע שינוי, לא נשלחה בקשה');
+    //         navigate('/posts');
+    //         return;
+    //     }
+
+    //     const formData = new FormData();
+    //     formData.append('title', title);
+    //     formData.append('body', body);
+    //     formData.append('post_type', postType || initialPost?.post_type || '');
+    //     formData.append('removeMedia', removeMedia);
+    //     if (mediaFile) formData.append('media', mediaFile);
+
+    //     try {
+    //         await onSave({ id: initialPost?.id, formData });
+    //         navigate('/posts');
+    //     } catch (err) {
+    //         console.error(err);
+    //         toast.error('שגיאה בשמירת הפוסט');
+    //     }
+    // };
     const handleSubmit = async () => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
         const schema = getPostSchema(!initialPost);
         const result = schema.safeParse({
             title,
@@ -62,11 +102,13 @@ function PostModal({ onSave, initialPost = null }) {
         if (!result.success) {
             const errorMessages = result.error.errors.map((e) => e.message).join(' | ');
             toast.error(errorMessages);
+            setIsSubmitting(false);
             return;
         }
 
         if (!hasChanges()) {
             toast.info('לא בוצע שינוי, לא נשלחה בקשה');
+            setIsSubmitting(false);
             navigate('/posts');
             return;
         }
@@ -84,6 +126,8 @@ function PostModal({ onSave, initialPost = null }) {
         } catch (err) {
             console.error(err);
             toast.error('שגיאה בשמירת הפוסט');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -133,8 +177,14 @@ function PostModal({ onSave, initialPost = null }) {
                 )}
 
                 <div className={styles.actions}>
-                    <button onClick={handleSubmit} disabled={!isValid}>שמור</button>
-                    <button onClick={() => navigate('/posts')}>ביטול</button>
+                    <button onClick={handleSubmit} disabled={!isValid || isSubmitting}>
+                        {isSubmitting ? 'שומר...' : 'שמור'}
+                    </button>
+                    {!isSubmitting && (
+                        <button onClick={() => navigate('/posts')}>
+                            ביטול
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
