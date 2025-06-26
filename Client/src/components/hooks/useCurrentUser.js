@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import APIRequests from "../services/ApiClientRequests";
+import APIRequests from "../../services/ApiClientRequests";
 
 export function useCurrentUser() {
     const [currentUser, setCurrentUser] = useState(null);

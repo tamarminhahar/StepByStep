@@ -1,13 +1,13 @@
 
 import { useRef, useEffect, useState } from 'react';
 import SinglePost from './SinglePost.jsx';
-import Nav from '../nav/nav.jsx';
+import Nav from '../nav/Nav.jsx';
 import { useCurrentUser } from '../hooks/useCurrentUser.js';
 import styles from './postStyle/PostsList.module.css';
 import { toast } from 'react-toastify';
 import PostModal from './PostModal.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
-import ApiClientRequests from '../services/ApiClientRequests'
+import ApiClientRequests from '../../services/ApiClientRequests.js'
 
 const PostsList = () => {
     const { currentUser, loading } = useCurrentUser();

@@ -2,16 +2,15 @@
 import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
-import ApiClientRequests from '../services/ApiClientRequests'
+import ApiClientRequests from '../../services/ApiClientRequests'
 import styles from './chatStyle/ChatWindow.module.css';
-import  socket  from '../services/ApiClientRequests';
-import Nav from '../nav/nav';
+import  socket  from '../../services/socket';
+import Nav from '../nav/Nav';
 
 export default function ChatWindow() {
   const { currentUser } = useCurrentUser();
   const location = useLocation();
   const { otherUserId, userName, mode } = location.state || {};
-
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [sessionId, setSessionId] = useState(null);
@@ -19,7 +18,6 @@ export default function ChatWindow() {
   const [lastUnreadMessageId, setLastUnreadMessageId] = useState(null);
   const [typingUserName, setTypingUserName] = useState(null);
   const [liveMessage, setLiveMessage] = useState('');
-
   const messagesEndRef = useRef(null);
   const messageSound = useRef(null);
 
@@ -49,24 +47,10 @@ export default function ChatWindow() {
             console.error('Failed to start chat:', res.error);
             return;
           }
-
           const sessionId = res.sessionId;
           setSessionId(sessionId);
           setMessages(res.history);
           setTimeout(scrollToBottom, 0);
-
-          // setSessionId(sessionId);
-
-          // try {
-          //   const history = await ApiClientRequests.getRequest(`chat/history/${sessionId}`);
-          //   const mapped = history.map(msg =>
-          //     msg.is_deleted ? { ...msg, message: 'ההודעה נמחקה', deleted: true } : msg
-          //   );
-          //   setMessages(mapped);
-          //   setTimeout(scrollToBottom, 0);
-          // } catch (err) {
-          //   console.error('Failed to fetch chat history:', err);
-          // }
         }
       );
     };

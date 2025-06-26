@@ -5,7 +5,7 @@ import { useCurrentUser } from '../hooks/useCurrentUser';
 import styles from './postStyle/SinglePost.module.css';
 import Comments from '../comments/Comments';
 import { toast } from 'react-toastify';
-import ApiClientRequests from '../services/ApiClientRequests'
+import ApiClientRequests from '../../services/ApiClientRequests'
 
 
 const SinglePost = ({ post, refreshPost, deletePost }) => {

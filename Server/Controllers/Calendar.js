@@ -1,32 +1,14 @@
 
 import * as calendarService from '../Services/Calendar.js';
 import { sendNotificationToUser } from '../socketHandlers/NotificationSocketController.js'; // וד
-import {createNotification} from '../Services/Notification.js'; // ודא שהנתיב נכון
+import { createNotification } from '../Services/Notification.js'; // ודא שהנתיב נכון
 import { getAllBereavedUsers } from '../Services/Users.js';
 
 
 export async function createEvent(req, res) {
-//     try {
-        
-//         const user = req.user;
-//         const eventData = req.body;
-// console.log('createEvent - user', user,eventData);    
-//         // 🟦 שיוך שדות לפי סוג המשתמש
-//         if (user.role === 'supporter') {
-//             eventData.created_by_supporter_id = user.id;
-//             eventData.user_id = null;
-//             eventData.apply_to_all = true; // ברירת מחדל לתומך – שליחה לכולם
-//         } else if (user.role === 'bereaved') {
-//             eventData.user_id = user.id;
-//             eventData.created_by_supporter_id = null;
-//         }
-try {
+    try {
         const user = req.user;
         const eventData = req.body;
-
-        console.log('createEvent - user', user, eventData);
-
-        // 🟦 שיוך שדות לפי סוג המשתמש
         if (user.role === 'supporter') {
             eventData.created_by_supporter_id = user.id;
 
@@ -46,35 +28,31 @@ try {
         // 🟩 יצירת האירוע במסד
         const eventId = await calendarService.createEvent(eventData);
 
-        // 🟩 הכנה לשידור socket
         const io = req.app.get('io');
         const message = `נוסף עבורך אירוע חדש: "${eventData.title}"`;
 
         // 🟨 אם תומך יצר אירוע:
-        if (user.role === 'supporter'&&eventData.apply_to_all) {
+        if (user.role === 'supporter' && eventData.apply_to_all) {
             // 🟨 אם הוא מייעד את זה לאבל מסוים
-    
-                const bereavedUsers = await getAllBereavedUsers();
-console.log('bereavedUsers', bereavedUsers);
-                for (const bereaved of bereavedUsers) {
-                    await createNotification({
-                        user_id: bereaved.id,
-                        type: 'event_reminder',
-                        message,
-        target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
-                    });
 
-                    sendNotificationToUser(io, bereaved.id, {
-                        
-                        type: 'event_reminder',
-                        message,
-        target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
-                    });
-                }
+            const bereavedUsers = await getAllBereavedUsers();
+            console.log('bereavedUsers', bereavedUsers);
+            for (const bereaved of bereavedUsers) {
+                await createNotification({
+                    user_id: bereaved.id,
+                    type: 'event_reminder',
+                    message,
+                    target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
+                });
+
+                sendNotificationToUser(io, bereaved.id, {
+
+                    type: 'event_reminder',
+                    message,
+                    target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
+                });
             }
-        
-
-        // 🟩 שליחת תגובה ללקוח
+        }
         res.status(201).json({ id: eventId });
 
     } catch (error) {
@@ -203,51 +181,51 @@ function validateEventData(eventData, user) {
 }
 
 export async function updateParticipation(req, res) {
-  const user = req.user;
-  const { id } = req.params;
-  const { status } = req.body;
+    const user = req.user;
+    const { id } = req.params;
+    const { status } = req.body;
 
-  if (status !== 'confirmed' && status !== 'declined') {
-    return res.status(400).json({ error: 'סטטוס לא תקין' });
-  }
+    if (status !== 'confirmed' && status !== 'declined') {
+        return res.status(400).json({ error: 'סטטוס לא תקין' });
+    }
 
-  const event = await calendarService.getEventById(id);
-  if (!event) return res.status(404).json({ error: 'Event not found' });
+    const event = await calendarService.getEventById(id);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
 
-  if (event.calendar_type !== 'supporter' || user.role !== 'bereaved') {
-    return res.status(403).json({ error: 'רק אבל יכול לאשר הגעה לאירוע של תומך' });
-  }
+    if (event.calendar_type !== 'supporter' || user.role !== 'bereaved') {
+        return res.status(403).json({ error: 'רק אבל יכול לאשר הגעה לאירוע של תומך' });
+    }
 
-  const alreadyParticipated = await calendarService.hasUserParticipated(event.id, user.id);
-  if (alreadyParticipated) {
-    return res.status(400).json({ error: 'כבר השתתפת באירוע זה' });
-  }
+    const alreadyParticipated = await calendarService.hasUserParticipated(event.id, user.id);
+    if (alreadyParticipated) {
+        return res.status(400).json({ error: 'כבר הגבת לאירוע זה' });
+    }
 
-  await calendarService.addParticipant(event.id, user.id);
+    await calendarService.addParticipant(event.id, user.id);
 
-  const io = req.app.get('io');
-  if (!io) {
-    console.error('❌ io לא מוגדר');
-    return res.status(500).json({ error: 'Socket server not initialized' });
-  }
+    const io = req.app.get('io');
+    if (!io) {
+        console.error('io לא מוגדר');
+        return res.status(500).json({ error: 'Socket server not initialized' });
+    }
 
-  // רק אם המשתמש אישר - שלח התראה לתומך
-  if (status === 'confirmed' && event.created_by_supporter_id) {
-    const message = `${user.user_name} אישר/ה הגעה לאירוע "${event.title}"`;
+    // רק אם המשתמש אישר - שלח התראה לתומך
+    if (status === 'confirmed' && event.created_by_supporter_id) {
+        const message = `${user.user_name} אישר/ה הגעה לאירוע "${event.title}"`;
 
-    await createNotification({
-      user_id: event.created_by_supporter_id,
-      type: 'event_participation',
-      message,
-      target_url: '/calendar'
-    });
+        await createNotification({
+            user_id: event.created_by_supporter_id,
+            type: 'event_participation',
+            message,
+            target_url: '/calendar'
+        });
 
-    sendNotificationToUser(io, event.created_by_supporter_id, {
-      type: 'event_participation',
-      message,
-      target_url: '/calendar'
-    });
-  }
+        sendNotificationToUser(io, event.created_by_supporter_id, {
+            type: 'event_participation',
+            message,
+            target_url: '/calendar'
+        });
+    }
 
-  res.json({ message: 'ההשתתפות נשמרה' });
+    res.json({ message: 'ההשתתפות נשמרה' });
 }

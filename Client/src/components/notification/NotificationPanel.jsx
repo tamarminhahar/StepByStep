@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import styles from "./notificationStyle/NotificationPanel.module.css";
-import { socket } from "../services/socket";
-import APIRequests from "../services/ApiClientRequests";
-import Nav from "../Nav/Nav";
+import { socket } from "../../services/socket";
+import APIRequests from "../../services/ApiClientRequests";
+import Nav from "../nav/Nav";
 
 export default function NotificationPanel({ mode = "panel" }) {
   const [notifications, setNotifications] = useState([]);

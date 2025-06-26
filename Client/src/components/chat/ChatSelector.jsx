@@ -1,7 +1,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import styles from './chatStyle/ChatSelector.module.css';
-import Nav from '../nav/nav.jsx';
+import Nav from '../nav/Nav.jsx';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 
 export default function ChatSelector() {

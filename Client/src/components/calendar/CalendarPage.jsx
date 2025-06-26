@@ -3,12 +3,13 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { useEffect, useState } from "react";
 import PopUpForm from "./PopUpForm";
-import Nav from "../nav/nav.jsx";
+import Nav from "../nav/Nav.jsx";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import APIRequests from "../services/ApiClientRequests.js";
+import APIRequests from "../../services/ApiClientRequests.js";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import styles from "./calendarStyle/calendarPage.module.css";
+import { useNavigate } from "react-router-dom";
 
 function CalendarPage() {
   const [events, setEvents] = useState([]);
@@ -17,6 +18,7 @@ function CalendarPage() {
   const [showModal, setShowModal] = useState(false);
   const { currentUser } = useCurrentUser();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEvents();
@@ -46,14 +48,50 @@ function CalendarPage() {
     }
   }
 
+  // useEffect(() => {
+  //   const params = new URLSearchParams(location.search);
+  //   const eventId = params.get("eventId");
+
+  //   if (eventId && events.length > 0) {
+  //     const matched = events.find(
+  //       (ev) => ev.id.toString() === eventId.toString()
+  //     );
+  //     if (matched) {
+  //       setSelectedEvent({
+  //         id: matched.id,
+  //         title: matched.title,
+  //         start_date: matched.start,
+  //         end_date: matched.end,
+  //         event_type: matched.extendedProps.event_type,
+  //         description: matched.extendedProps.description,
+  //         color: matched.color,
+  //         calendar_type: matched.extendedProps.calendar_type,
+  //         locked: matched.extendedProps.locked,
+  //       });
+  //       setShowModal(true);
+  //     }
+  //   }
+  // }, [location.search, events]);
+
+  // function handleDateClick(dateInfo) {
+  //   setSelectedDate(dateInfo.dateStr);
+  //   setSelectedEvent(null);
+  //   setShowModal(true);
+  // }
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const eventId = params.get("eventId");
 
-    if (eventId && events.length > 0) {
-      const matched = events.find(
-        (ev) => ev.id.toString() === eventId.toString()
-      );
+    if (location.pathname === "/calendar/new") {
+      setSelectedDate(params.get("date"));
+      setSelectedEvent(null);
+    } else if
+      ((location.pathname === "/calendar/edit" || location.pathname === "/calendar/view")
+      && eventId
+      && events.length > 0
+    ) {
+      const matched = events.find(ev => ev.id.toString() === eventId.toString());
       if (matched) {
         setSelectedEvent({
           id: matched.id,
@@ -65,52 +103,65 @@ function CalendarPage() {
           color: matched.color,
           calendar_type: matched.extendedProps.calendar_type,
           locked: matched.extendedProps.locked,
+          hasParticipated: matched.extendedProps.hasParticipated,
+          participation_status: matched.extendedProps.participation_status
         });
-        setShowModal(true);
+        setSelectedDate(matched.start);
       }
+    } else {
+      setSelectedEvent(null);
+      setSelectedDate(null);
     }
-  }, [location.search, events]);
+  }, [location, events]);
 
   function handleDateClick(dateInfo) {
-    setSelectedDate(dateInfo.dateStr);
-    setSelectedEvent(null);
-    setShowModal(true);
+    navigate(`/calendar/new?date=${dateInfo.dateStr}`);
   }
 
+  // function handleEventClick(clickInfo) {
+  //   const event = clickInfo.event;
+  //   const isLocked = event.extendedProps.locked === 1;
+  //   const isBereaved = currentUser?.role === "bereaved";
+  //   const addedBySupporter = event.extendedProps.calendar_type === "supporter";
+  //   const canEdit = !(isLocked || (isBereaved && addedBySupporter));
+  //   console.log(event.extendedProps.locked);
+
+  //   if (!canEdit) {
+  //     toast.info("אין לך הרשאה לערוך את האירוע");
+  //     return;
+  //   } else {
+  //     setSelectedDate(event.startStr);
+  //     setSelectedEvent({
+  //       id: event.id,
+  //       title: event.title,
+  //       start_date: event.startStr,
+  //       end_date: event.endStr,
+  //       event_type: event.extendedProps.event_type,
+  //       description: event.extendedProps.description,
+  //       color: event.backgroundColor || event.color,
+  //       calendar_type: event.extendedProps.calendar_type,
+  //       locked: event.extendedProps.locked,
+  //     });
+  //     setShowModal(true);
+  //   }
+  // }
   function handleEventClick(clickInfo) {
     const event = clickInfo.event;
     const isLocked = event.extendedProps.locked === 1;
     const isBereaved = currentUser?.role === "bereaved";
     const addedBySupporter = event.extendedProps.calendar_type === "supporter";
     const canEdit = !(isLocked || (isBereaved && addedBySupporter));
-    console.log(event.extendedProps.locked);
 
     if (!canEdit) {
-      toast.info("אין לך הרשאה לערוך את האירוע");
+      navigate(`/calendar/view?eventId=${event.id}`);
       return;
-    } else {
-      setSelectedDate(event.startStr);
-      setSelectedEvent({
-        id: event.id,
-        title: event.title,
-        start_date: event.startStr,
-        end_date: event.endStr,
-        event_type: event.extendedProps.event_type,
-        description: event.extendedProps.description,
-        color: event.backgroundColor || event.color,
-        calendar_type: event.extendedProps.calendar_type,
-        locked: event.extendedProps.locked,
-      });
-      setShowModal(true);
     }
+    navigate(`/calendar/edit?eventId=${event.id}`);
   }
-
   return (
     <div className={styles.calendarPageContainer}>
-      {" "}
       <Nav />
       <div className={styles.calendarWrapper}>
-        {" "}
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -122,17 +173,70 @@ function CalendarPage() {
           height="auto"
         />
       </div>
-      {showModal && (
+
+      {/* כאן רק את החלק הזה להחליף */}
+
+      {location.pathname === "/calendar/new" && (
         <PopUpForm
           selectedDate={selectedDate}
-          selectedEvent={selectedEvent}
-          onClose={() => setShowModal(false)}
+          selectedEvent={null}
+          onClose={() => navigate("/calendar")}
           onEventSaved={fetchEvents}
           onEventDeleted={fetchEvents}
         />
       )}
+
+      {location.pathname === "/calendar/edit" && selectedEvent && (
+        <PopUpForm
+          selectedDate={selectedDate}
+          selectedEvent={selectedEvent}
+          onClose={() => navigate("/calendar")}
+          onEventSaved={fetchEvents}
+          onEventDeleted={fetchEvents}
+        />
+      )}
+      {location.pathname === "/calendar/view" && selectedEvent && (
+        <PopUpForm
+          selectedDate={selectedDate}
+          selectedEvent={selectedEvent}
+          onClose={() => navigate("/calendar")}
+          onEventSaved={fetchEvents}
+          onEventDeleted={fetchEvents}
+          viewOnly={true}
+        />
+      )}
+
     </div>
   );
+
+
+  // return (
+  //   <div className={styles.calendarPageContainer}>
+
+  //     <Nav />
+  //     <div className={styles.calendarWrapper}>
+  //       <FullCalendar
+  //         plugins={[dayGridPlugin, interactionPlugin]}
+  //         initialView="dayGridMonth"
+  //         events={events}
+  //         dateClick={handleDateClick}
+  //         eventClick={handleEventClick}
+  //         locale="he"
+  //         buttonText={{ today: "היום" }}
+  //         height="auto"
+  //       />
+  //     </div>
+  //     {showModal && (
+  //       <PopUpForm
+  //         selectedDate={selectedDate}
+  //         selectedEvent={selectedEvent}
+  //         onClose={() => setShowModal(false)}
+  //         onEventSaved={fetchEvents}
+  //         onEventDeleted={fetchEvents}
+  //       />
+  //     )}
+  //   </div>
+  // );
 }
 
 export default CalendarPage;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Nav from "../nav/nav";
+import Nav from "../nav/Nav";
 import { useCurrentUser } from "../hooks/useCurrentUser"; // ודא נתיב נכון
 import NotificationPanel from "../notification/NotificationPanel";import ChatWindow from '../chat/ChatWindow'; // ודא נתיב
 import styles from './Home.module.css'; // ייבוא מודול CSS

@@ -20,7 +20,6 @@ export async function getUsersByRole(role, excludeUserId = null) {
   return users;
 }
 
-
 export async function checkUserExistenceService(username, email) {
   const [users] = await db.query(`
     SELECT user_name, email FROM users

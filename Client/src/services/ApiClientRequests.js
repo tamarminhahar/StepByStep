@@ -75,6 +75,25 @@ class APIRequests extends Component {
         return data;
     }
 
+    static async putRequest(restUrl, objectToUpdate) {
+    const response = await fetch(`${SERVER_URL}${restUrl}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: this.buildHeaders(),
+        body: JSON.stringify(objectToUpdate),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        const errorMessage = data?.error || 'An error occurred during the PUT request';
+        throw new Error(errorMessage);
+    }
+
+    return data;
+}
+
+
     static async patchRequest(restUrl, fieldsToUpdate) {
         const response = await fetch(`${SERVER_URL}${restUrl}`, {
             method: 'PATCH',

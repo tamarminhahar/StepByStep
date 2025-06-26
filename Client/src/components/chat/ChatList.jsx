@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { toast } from 'react-toastify';
-import ApiClientRequests from '../services/ApiClientRequests'
+import ApiClientRequests from '../../services/ApiClientRequests.js'
 import styles from './chatStyle/ChatList.module.css';
-import Nav from '../nav/nav.jsx';
-import { socket } from '../../socket';
+import Nav from '../nav/Nav.jsx';
+import  socket  from '../../services/socket.js';
 
 export default function ChatList() {
   const location = useLocation();

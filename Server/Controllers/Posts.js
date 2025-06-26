@@ -17,39 +17,36 @@ export async function getPosts(req, res) {
 
 export async function createPost(req, res) {
     const { title, body, post_type } = req.body;
-    const user_id = req.user.id; // מה־JWT
+    const user_id = req.user.id;
     const media_url = req.file ? req.file.path : null;
 
     try {
         const postId = await postService.addPost(user_id, title, body, media_url, post_type);
-
-        // const posts = await postService.getPostsByUser(user_id);
-        // const addedPost = posts.find(p => p.id === postId);
-       const addedPost = await postService.getPostByIdWithDetails(postId, user_id);
+        const addedPost = await postService.getPostByIdWithDetails(postId, user_id);
 
         res.status(201).json(addedPost);
     } catch (err) {
-console.error('Error creating post:', {
-    message: err.message,
-    stack: err.stack,
-    name: err.name,
-    code: err.code,
-    response: err.response,
-    error: err.error,
-    errors: err.errors
-});
+        console.error('Error creating post:', {
+            message: err.message,
+            stack: err.stack,
+            name: err.name,
+            code: err.code,
+            response: err.response,
+            error: err.error,
+            errors: err.errors
+        });
 
-    if (err.message && err.message.includes('Invalid file format')) {
-        res.status(400).json({ error: 'Unsupported media format. Please upload image or mp4/webm video.' });
-    } else {
-        res.status(500).json({ error: 'Failed to create post' });
+        if (err.message && err.message.includes('Invalid file format')) {
+            res.status(400).json({ error: 'Unsupported media format. Please upload image or mp4/webm video.' });
+        } else {
+            res.status(500).json({ error: 'Failed to create post' });
+        }
     }
-}
 }
 
 export async function deletePost(req, res) {
     try {
- const userId = req.user.id;
+        const userId = req.user.id;
         const success = await postService.deletePost(req.params.postId, userId);
 
         if (!success) {
@@ -66,7 +63,7 @@ export async function deletePost(req, res) {
 export async function updatePost(req, res) {
     try {
         const postId = req.params.id;
-        const user_id = req.user.id; 
+        const user_id = req.user.id;
         const { title, body, post_type, removeMedia } = req.body;
 
         console.log('BODY:', req.body);
@@ -74,7 +71,7 @@ export async function updatePost(req, res) {
 
         // נביא את הפוסט מה־DB כדי לדעת מה ה־media_url הקיים
         const posts = await postService.getPostsByUser(user_id);
-const existingPost = await postService.getPostById(postId);
+        const existingPost = await postService.getPostById(postId);
 
         if (!existingPost) {
             return res.status(404).json({ message: 'Post not found' });
@@ -104,11 +101,8 @@ const existingPost = await postService.getPostById(postId);
         });
 
         // נחזיר את הפוסט המעודכן
-        const updatedPosts = await postService.getPostsByUser(user_id);
-        const updatedPost = updatedPosts.find(p => p.id === Number(postId));
-
+        const updatedPost = await postService.getPostByIdWithDetails(postId, user_id);
         res.status(200).json(updatedPost);
-
     } catch (err) {
         console.error('Error in updatePost:', err);
         res.status(500).json({ message: 'Internal server error' });
