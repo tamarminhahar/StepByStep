@@ -1,5 +1,16 @@
 
 import db from '../../DB/dbConnection.js';
+export async function getEventsForUser(userId) {
+    const [rows] = await db.query(`
+        SELECT * FROM calendar_events
+        WHERE
+            (calendar_type = 'supporter' AND apply_to_all = true)
+            OR
+            (calendar_type = 'bereaved' AND user_id = ?)
+    `, [userId]);
+
+    return rows;
+}
 
 export async function createEvent(eventData) {
     const [result] = await db.query(`
@@ -22,6 +33,11 @@ export async function createEvent(eventData) {
     return result.insertId;
 }
 
+export async function getEventById(eventId) {
+    const [rows] = await db.query(`SELECT * FROM calendar_events WHERE id = ?`, [eventId]);
+    return rows[0];
+}
+
 export async function updateEvent(eventId, eventData) {
     await db.query(`
         UPDATE calendar_events
@@ -42,44 +58,6 @@ export async function deleteEvent(eventId) {
     await db.query(`DELETE FROM calendar_events WHERE id = ?`, [eventId]);
 }
 
-export async function getEventsForUser(userId) {
-    const [rows] = await db.query(`
-        SELECT * FROM calendar_events
-        WHERE
-            (calendar_type = 'supporter' AND apply_to_all = true)
-            OR
-            (calendar_type = 'bereaved' AND user_id = ?)
-    `, [userId]);
-
-    return rows;
-}
-
-export async function getEventById(eventId) {
-    const [rows] = await db.query(`SELECT * FROM calendar_events WHERE id = ?`, [eventId]);
-    return rows[0];
-}
-
-// export async function updateParticipationStatus(eventId, status) {
-//   const [result] = await db.query(
-//     'UPDATE calendar_events SET participation_status = ? WHERE id = ?',
-//     [status, eventId]
-//   );
-//   return result;
-// }
-// export async function hasUserParticipated(eventId, userId) {
-//   const [rows] = await db.query(
-//     'SELECT 1 FROM event_participation WHERE event_id = ? AND user_id = ?',
-//     [eventId, userId]
-//   );
-//   return rows.length > 0;
-// }
-// export async function addParticipant(eventId, userId) {
-//   await db.query(
-//     'INSERT IGNORE INTO event_participation (event_id, user_id) VALUES (?, ?)',
-//     [eventId, userId]
-//   );
-// }
-
 export async function hasUserParticipated(eventId, userId) {
   const [rows] = await db.query(
     'SELECT 1 FROM event_participation WHERE event_id = ? AND user_id = ?',
@@ -87,7 +65,7 @@ export async function hasUserParticipated(eventId, userId) {
   );
   return rows.length > 0;
 }
-// 🔎 בודק אם המשתמש כבר השתתף באירוע – כדי למנוע כפילויות
+
 export async function addParticipant(eventId, userId) {
   await db.query(
     'INSERT IGNORE INTO event_participation (event_id, user_id) VALUES (?, ?)',
@@ -95,4 +73,21 @@ export async function addParticipant(eventId, userId) {
   );
 }
 
+export async function isEventParticipationNotification(supporterId) {
+    const [rows] = await db.query(`
+        SELECT 1 FROM notifications
+        WHERE type = 'event_participation' AND user_id = ? AND target_url = '/calendar' AND message = 'יש לך משתתפים שאישרו הגעה לאירוע שלך ביומן'
+    `, [supporterId]);
+    return rows.length > 0;
+}
+
+export async function getEventParticipants(eventId) {
+  const [rows] = await db.query(`
+    SELECT u.id, u.user_name
+    FROM event_participation ep
+    JOIN users u ON u.id = ep.user_id
+    WHERE ep.event_id = ?`, [eventId]);
+
+  return rows;
+}
 

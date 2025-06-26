@@ -25,7 +25,6 @@ const SinglePost = ({ post, refreshPost, deletePost }) => {
             }
         } catch (err) {
             toast.error(err.message);
-            console.error(err);
         }
     };
 
@@ -42,7 +41,6 @@ const SinglePost = ({ post, refreshPost, deletePost }) => {
             });
         } catch (err) {
             toast.error(err.message);
-            console.error(err);
         }
     };
 

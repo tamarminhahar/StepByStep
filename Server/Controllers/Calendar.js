@@ -4,6 +4,16 @@ import { sendNotificationToUser } from '../socketHandlers/NotificationSocketCont
 import { createNotification } from '../Services/Notification.js'; // ודא שהנתיב נכון
 import { getAllBereavedUsers } from '../Services/Users.js';
 
+export async function getEventsForUser(req, res) {
+    try {
+        const userId = req.user.id;
+        const events = await calendarService.getEventsForUser(userId);
+        res.json(events);
+    } catch (error) {
+        console.error('Error getting events:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 
 export async function createEvent(req, res) {
     try {
@@ -12,44 +22,33 @@ export async function createEvent(req, res) {
         if (user.role === 'supporter') {
             eventData.created_by_supporter_id = user.id;
 
-            // אם לא הגיע user_id – סימן שזה אירוע כללי, ולכן apply_to_all = true
             if (!eventData.user_id) {
                 eventData.apply_to_all = true;
-            } else {
+            } else
                 eventData.apply_to_all = false;
-            }
         } else if (user.role === 'bereaved') {
             eventData.user_id = user.id;
             eventData.created_by_supporter_id = null;
         }
-        // 🟦 ולידציה של תוכן האירוע
         validateEventData(eventData, user);
-
-        // 🟩 יצירת האירוע במסד
         const eventId = await calendarService.createEvent(eventData);
 
         const io = req.app.get('io');
         const message = `נוסף עבורך אירוע חדש: "${eventData.title}"`;
 
-        // 🟨 אם תומך יצר אירוע:
         if (user.role === 'supporter' && eventData.apply_to_all) {
-            // 🟨 אם הוא מייעד את זה לאבל מסוים
-
             const bereavedUsers = await getAllBereavedUsers();
-            console.log('bereavedUsers', bereavedUsers);
             for (const bereaved of bereavedUsers) {
                 await createNotification({
                     user_id: bereaved.id,
                     type: 'event_reminder',
                     message,
-                    target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
+                    target_url: `/calendar?eventId=${eventId}`
                 });
-
                 sendNotificationToUser(io, bereaved.id, {
-
                     type: 'event_reminder',
                     message,
-                    target_url: `/${bereaved.user_name}/calendar?eventId=${eventId}`
+                    target_url: `/calendar?eventId=${eventId}`
                 });
             }
         }
@@ -66,33 +65,24 @@ export async function updateEvent(req, res) {
         const user = req.user;
         const eventId = req.params.id;
         const eventData = req.body;
-
         const existingEvent = await calendarService.getEventById(eventId);
-
         if (!existingEvent) {
             return res.status(404).json({ error: 'Event not found' });
         }
-
         if (existingEvent.locked) {
-            return res.status(403).json({ error: 'אירוע נעול - אין אפשרות לערוך אותו' });
+            return res.status(403).json({ error: 'You are not authorized to update an event created by a supporter' });
         }
-
         if (existingEvent.calendar_type === 'supporter' && user.role === 'bereaved') {
-            return res.status(403).json({ error: 'אין הרשאה לעדכן אירוע שנוצר על ידי תומך' });
+            return res.status(403).json({ error: 'You are not authorized to update an event created by a supporter' });
         }
 
-        if (existingEvent.calendar_type === 'bereaved') {
-            if (existingEvent.user_id !== user.id && user.role !== 'admin') {
+        if (existingEvent.calendar_type === 'supporter') {
+            if (existingEvent.created_by_supporter_id !== user.id) {
                 return res.status(403).json({ error: 'Unauthorized to update this event' });
             }
-        } else if (existingEvent.calendar_type === 'supporter') {
-            if (existingEvent.created_by_supporter_id !== user.id && user.role !== 'admin') {
-                return res.status(403).json({ error: 'Unauthorized to update this event' });
-            }
-        } else {
+        } else if (existingEvent.calendar_type !== 'bereaved') {
             return res.status(400).json({ error: 'Invalid calendar_type' });
         }
-
         await calendarService.updateEvent(eventId, eventData);
         res.json({ message: 'Event updated successfully' });
 
@@ -114,42 +104,90 @@ export async function deleteEvent(req, res) {
         }
 
         if (existingEvent.locked) {
-            return res.status(403).json({ error: 'אירוע נעול - אין אפשרות למחוק אותו' });
+            return res.status(403).json({ error: 'This event is locked and cannot be deleted' });
         }
 
         if (existingEvent.calendar_type === 'supporter' && user.role === 'bereaved') {
-            return res.status(403).json({ error: 'אין הרשאה למחוק אירוע שנוצר על ידי תומך' });
+            return res.status(403).json({ error: 'You are not authorized to delete an event created by a supporter' });
         }
 
         if (existingEvent.calendar_type === 'bereaved') {
-            if (existingEvent.user_id !== user.id && user.role !== 'admin') {
+            if (existingEvent.user_id !== user.id ) {
                 return res.status(403).json({ error: 'Unauthorized to delete this event' });
             }
         } else if (existingEvent.calendar_type === 'supporter') {
-            if (existingEvent.created_by_supporter_id !== user.id && user.role !== 'admin') {
+            if (existingEvent.created_by_supporter_id !== user.id ) {
                 return res.status(403).json({ error: 'Unauthorized to delete this event' });
             }
         } else {
             return res.status(400).json({ error: 'Invalid calendar_type' });
         }
-
         await calendarService.deleteEvent(eventId);
         res.json({ message: 'Event deleted successfully' });
-
     } catch (error) {
         console.error('Error deleting event:', error);
         res.status(400).json({ error: error.message });
     }
 }
 
-export async function getEventsForUser(req, res) {
+export async function updateParticipation(req, res) {
+    const user = req.user;
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (status !== 'confirmed' && status !== 'declined') {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    const event = await calendarService.getEventById(id);
+    if (!event) return res.status(404).json({ error: 'Event not found' });
+
+    if (event.calendar_type !== 'supporter' || user.role !== 'bereaved') {
+        return res.status(403).json({ error: 'Only a bereaved user can confirm participation in a supporter event' });
+    }
+
+    const alreadyParticipated = await calendarService.hasUserParticipated(event.id, user.id);
+    if (alreadyParticipated) {
+        return res.status(400).json({ error: 'You have already responded to this event' });
+    }
+
+    await calendarService.addParticipant(event.id, user.id);
+
+    const io = req.app.get('io');
+    if (!io) {
+        return res.status(500).json({ error: 'Socket server not initialized' });
+    }
+
+    if (status === 'confirmed' && event.created_by_supporter_id) {
+        const existingNotification = await calendarService.isEventParticipationNotification(event.id, event.created_by_supporter_id);
+        if (!existingNotification) {
+            const message = 'יש לך משתתפים שאישרו הגעה לאירוע שלך ביומן';
+            await createNotification({
+                user_id: event.created_by_supporter_id,
+                type: 'event_participation',
+                message,
+                target_url: '/calendar'
+            });
+
+            sendNotificationToUser(io, event.created_by_supporter_id, {
+                type: 'event_participation',
+                message,
+                target_url: '/calendar'
+            });
+        }
+    }
+    res.json({ message: 'ההשתתפות נשמרה' });
+
+}
+
+export async function getParticipants(req, res) {
     try {
-        const userId = req.user.id;
-        const events = await calendarService.getEventsForUser(userId);
-        res.json(events);
-    } catch (error) {
-        console.error('Error getting events:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        const { eventId } = req.params;
+        const participants = await getEventParticipants(eventId);
+        res.json(participants);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'error get participants' });
     }
 }
 
@@ -178,54 +216,4 @@ function validateEventData(eventData, user) {
     } else {
         throw new Error('Unauthorized role');
     }
-}
-
-export async function updateParticipation(req, res) {
-    const user = req.user;
-    const { id } = req.params;
-    const { status } = req.body;
-
-    if (status !== 'confirmed' && status !== 'declined') {
-        return res.status(400).json({ error: 'סטטוס לא תקין' });
-    }
-
-    const event = await calendarService.getEventById(id);
-    if (!event) return res.status(404).json({ error: 'Event not found' });
-
-    if (event.calendar_type !== 'supporter' || user.role !== 'bereaved') {
-        return res.status(403).json({ error: 'רק אבל יכול לאשר הגעה לאירוע של תומך' });
-    }
-
-    const alreadyParticipated = await calendarService.hasUserParticipated(event.id, user.id);
-    if (alreadyParticipated) {
-        return res.status(400).json({ error: 'כבר הגבת לאירוע זה' });
-    }
-
-    await calendarService.addParticipant(event.id, user.id);
-
-    const io = req.app.get('io');
-    if (!io) {
-        console.error('io לא מוגדר');
-        return res.status(500).json({ error: 'Socket server not initialized' });
-    }
-
-    // רק אם המשתמש אישר - שלח התראה לתומך
-    if (status === 'confirmed' && event.created_by_supporter_id) {
-        const message = `${user.user_name} אישר/ה הגעה לאירוע "${event.title}"`;
-
-        await createNotification({
-            user_id: event.created_by_supporter_id,
-            type: 'event_participation',
-            message,
-            target_url: '/calendar'
-        });
-
-        sendNotificationToUser(io, event.created_by_supporter_id, {
-            type: 'event_participation',
-            message,
-            target_url: '/calendar'
-        });
-    }
-
-    res.json({ message: 'ההשתתפות נשמרה' });
 }

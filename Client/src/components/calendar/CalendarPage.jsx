@@ -26,7 +26,7 @@ function CalendarPage() {
 
   async function fetchEvents() {
     try {
-      const data = await APIRequests.getRequest("api/calendar/user/me");
+      const data = await APIRequests.getRequest("api/calendar/my_calendar");
       const mapped = data.map((event) => ({
         id: event.id,
         title: event.title,
@@ -43,42 +43,9 @@ function CalendarPage() {
       }));
       setEvents(mapped);
     } catch (err) {
-      console.error("Error fetching events:", err);
       toast.error("שגיאה בטעינת אירועים");
     }
   }
-
-  // useEffect(() => {
-  //   const params = new URLSearchParams(location.search);
-  //   const eventId = params.get("eventId");
-
-  //   if (eventId && events.length > 0) {
-  //     const matched = events.find(
-  //       (ev) => ev.id.toString() === eventId.toString()
-  //     );
-  //     if (matched) {
-  //       setSelectedEvent({
-  //         id: matched.id,
-  //         title: matched.title,
-  //         start_date: matched.start,
-  //         end_date: matched.end,
-  //         event_type: matched.extendedProps.event_type,
-  //         description: matched.extendedProps.description,
-  //         color: matched.color,
-  //         calendar_type: matched.extendedProps.calendar_type,
-  //         locked: matched.extendedProps.locked,
-  //       });
-  //       setShowModal(true);
-  //     }
-  //   }
-  // }, [location.search, events]);
-
-  // function handleDateClick(dateInfo) {
-  //   setSelectedDate(dateInfo.dateStr);
-  //   setSelectedEvent(null);
-  //   setShowModal(true);
-  // }
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const eventId = params.get("eventId");
@@ -118,33 +85,6 @@ function CalendarPage() {
     navigate(`/calendar/new?date=${dateInfo.dateStr}`);
   }
 
-  // function handleEventClick(clickInfo) {
-  //   const event = clickInfo.event;
-  //   const isLocked = event.extendedProps.locked === 1;
-  //   const isBereaved = currentUser?.role === "bereaved";
-  //   const addedBySupporter = event.extendedProps.calendar_type === "supporter";
-  //   const canEdit = !(isLocked || (isBereaved && addedBySupporter));
-  //   console.log(event.extendedProps.locked);
-
-  //   if (!canEdit) {
-  //     toast.info("אין לך הרשאה לערוך את האירוע");
-  //     return;
-  //   } else {
-  //     setSelectedDate(event.startStr);
-  //     setSelectedEvent({
-  //       id: event.id,
-  //       title: event.title,
-  //       start_date: event.startStr,
-  //       end_date: event.endStr,
-  //       event_type: event.extendedProps.event_type,
-  //       description: event.extendedProps.description,
-  //       color: event.backgroundColor || event.color,
-  //       calendar_type: event.extendedProps.calendar_type,
-  //       locked: event.extendedProps.locked,
-  //     });
-  //     setShowModal(true);
-  //   }
-  // }
   function handleEventClick(clickInfo) {
     const event = clickInfo.event;
     const isLocked = event.extendedProps.locked === 1;
@@ -208,35 +148,6 @@ function CalendarPage() {
 
     </div>
   );
-
-
-  // return (
-  //   <div className={styles.calendarPageContainer}>
-
-  //     <Nav />
-  //     <div className={styles.calendarWrapper}>
-  //       <FullCalendar
-  //         plugins={[dayGridPlugin, interactionPlugin]}
-  //         initialView="dayGridMonth"
-  //         events={events}
-  //         dateClick={handleDateClick}
-  //         eventClick={handleEventClick}
-  //         locale="he"
-  //         buttonText={{ today: "היום" }}
-  //         height="auto"
-  //       />
-  //     </div>
-  //     {showModal && (
-  //       <PopUpForm
-  //         selectedDate={selectedDate}
-  //         selectedEvent={selectedEvent}
-  //         onClose={() => setShowModal(false)}
-  //         onEventSaved={fetchEvents}
-  //         onEventDeleted={fetchEvents}
-  //       />
-  //     )}
-  //   </div>
-  // );
 }
 
 export default CalendarPage;

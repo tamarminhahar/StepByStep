@@ -1,4 +1,10 @@
 import db from '../../DB/dbConnection.js';
+export async function createNotification({ user_id, type, message, target_url }) {
+    await db.query(`
+        INSERT INTO notifications (user_id, type, message, target_url)
+        VALUES (?, ?, ?, ?)
+    `, [user_id, type, message, target_url]);
+}
 
 export async function getNotificationsForUser(userId) {
     const [rows] = await db.query(`
@@ -7,20 +13,12 @@ export async function getNotificationsForUser(userId) {
     return rows;
 }
 
-
-
-export async function createNotification({ user_id, type, message, target_url }) {
-    await db.query(`
-        INSERT INTO notifications (user_id, type, message, target_url)
-        VALUES (?, ?, ?, ?)
-    `, [user_id, type, message, target_url]);
-}
-
 export async function markAsRead(notificationId, userId) {
     await db.query(`
         UPDATE notifications SET is_read = true WHERE id = ? AND user_id = ?
     `, [notificationId, userId]);
 }
+
 export async function markAllAsRead(userId) {
     await db.query(`
         UPDATE notifications SET is_read = true WHERE user_id = ?

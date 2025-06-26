@@ -29,7 +29,6 @@ export default function ChatList() {
         const filtered = users.filter((u) => u.id !== currentUser.id);
         setUsers(filtered);
       } catch (err) {
-        console.error('Fetch users error:', err);
         toast.error('אירעה שגיאה בטעינת המשתמשים');
       } finally {
         setLoading(false);
@@ -40,13 +39,12 @@ export default function ChatList() {
       try {
         const pending = await ApiClientRequests.getRequest(`chat/pending`);
         const map = {};
-        console.log(pending)
         pending.forEach((msg) => {
           if (!map[msg.senderId]) map[msg.senderId] = true;
         });
         setPendingMap(map);
       } catch (err) {
-        console.error('שגיאה בטעינת הודעות ממתינות:', err);
+        toast.error('שגיאה בטעינת הודעות ממתינות:', err);
       }
     };
 

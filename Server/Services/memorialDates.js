@@ -7,15 +7,12 @@ function formatDate(date) {
 export async function createMemorialEventsForUser(userId, dateOfLoss) {
   const base = new Date(dateOfLoss);
   const events = [];
-
-  // פטירה
   events.push({
     title: 'תאריך הפטירה',
     date: new Date(base),
     type: 'אזכרה'
   });
 
-  // שבעה
   for (let i = 0; i < 7; i++) {
     const d = new Date(base);
     d.setDate(d.getDate() + i);
@@ -26,7 +23,6 @@ export async function createMemorialEventsForUser(userId, dateOfLoss) {
     });
   }
 
-  // שלושים
   const shloshim = new Date(base);
   shloshim.setDate(shloshim.getDate() + 29);
   events.push({
@@ -35,7 +31,6 @@ export async function createMemorialEventsForUser(userId, dateOfLoss) {
     type: 'אזכרה'
   });
 
-  // יארצייט
   const yahrzeit = new Date(base);
   yahrzeit.setFullYear(yahrzeit.getFullYear() + 1);
   events.push({

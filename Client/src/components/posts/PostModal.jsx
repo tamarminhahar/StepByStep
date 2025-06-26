@@ -51,42 +51,6 @@ function PostModal({ onSave, initialPost = null }) {
                 ),
         });
 
-    // const handleSubmit = async () => {
-    //     const schema = getPostSchema(!initialPost);
-    //     const result = schema.safeParse({
-    //         title,
-    //         body,
-    //         postType,
-    //         mediaFile,
-    //     });
-
-    //     if (!result.success) {
-    //         const errorMessages = result.error.errors.map((e) => e.message).join(' | ');
-    //         toast.error(errorMessages);
-    //         return;
-    //     }
-
-    //     if (!hasChanges()) {
-    //         toast.info('לא בוצע שינוי, לא נשלחה בקשה');
-    //         navigate('/posts');
-    //         return;
-    //     }
-
-    //     const formData = new FormData();
-    //     formData.append('title', title);
-    //     formData.append('body', body);
-    //     formData.append('post_type', postType || initialPost?.post_type || '');
-    //     formData.append('removeMedia', removeMedia);
-    //     if (mediaFile) formData.append('media', mediaFile);
-
-    //     try {
-    //         await onSave({ id: initialPost?.id, formData });
-    //         navigate('/posts');
-    //     } catch (err) {
-    //         console.error(err);
-    //         toast.error('שגיאה בשמירת הפוסט');
-    //     }
-    // };
     const handleSubmit = async () => {
         if (isSubmitting) return;
         setIsSubmitting(true);
@@ -124,7 +88,6 @@ function PostModal({ onSave, initialPost = null }) {
             await onSave({ id: initialPost?.id, formData });
             navigate('/posts');
         } catch (err) {
-            console.error(err);
             toast.error('שגיאה בשמירת הפוסט');
         } finally {
             setIsSubmitting(false);

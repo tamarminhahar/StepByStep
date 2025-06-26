@@ -42,7 +42,6 @@ const BereavedDetails = () => {
             await ApiClientRequests.postRequest('users/bereaved_profile', formData);
             navigate('/home', { replace: true });
         } catch (err) {
-            console.error(err);
             setError(err.message);
             toast.error('אירעה שגיאה בשמירת הפרופיל');
         }

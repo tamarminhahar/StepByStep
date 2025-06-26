@@ -13,7 +13,7 @@ export default function PendingMessages() {
         const messages = await ApiClientRequests.getRequest(`chat/pending`);
         setCount(messages.length);
       } catch (err) {
-        console.error('שגיאה בשליפת הודעות שלא נקראו:', err);
+        toast.error('שגיאה בשליפת הודעות שלא נקראו:', err);
       }
     }
 

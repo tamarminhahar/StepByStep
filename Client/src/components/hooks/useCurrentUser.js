@@ -11,15 +11,13 @@ export function useCurrentUser() {
                 const user = await APIRequests.getRequest("users/current");
                 setCurrentUser(user);
             } catch (err) {
-                console.error(err);
+                toast.error(err);
                 setCurrentUser(null);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchCurrentUser();
     }, []);
-
     return { currentUser, loading };
 }

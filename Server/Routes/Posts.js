@@ -8,14 +8,11 @@ const router = express.Router();
 
 router.use(authenticateJWT, authorizeRoles('supporter', 'bereaved'));
 
-// Post routes
 router.get('/', PostController.getPosts);
 router.post('/', upload.single('media'), PostController.createPost);
 router.delete('/:postId', PostController.deletePost);
 router.patch('/:id', upload.single('media'), PostController.updatePost);
 
-
-// Nested routes - Likes
 router.post('/:postId/likes', PostController.addLikeToPost);
 router.delete('/:postId/likes', PostController.removeLikeFromPost);
 

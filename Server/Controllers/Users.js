@@ -1,33 +1,55 @@
 
-import { checkUserExistenceService, addUser, loginUser, addBereavedProfile, addSupporterProfile, performLogout, getUsersByRole, updateOnlineStatus } from '../Services/Users.js';
+import { checkUserExistenceService, addUser, loginUser, addBereavedProfile, addSupporterProfile, performLogout, getUsersByRole, updateOnlineStatus, getCurrentUserData } from '../Services/Users.js';
 import bcrypt from 'bcrypt';
 import { generateToken } from '../Middlewares/generateToken.js';
 import { createMemorialEventsForUser } from '../Services/memorialDates.js';
 
-export async function checkUserExistence(req, res) {
-  const { username, email } = req.body;
-  try {
-    const result = await checkUserExistenceService(username, email);
-    res.json(result);
-  } catch (error) {
-    console.error('Error checking existence:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-}
-
 export async function getAvailableUsers(req, res) {
   const mode = req.query.mode;
-
   if (!['supporter', 'bereaved'].includes(mode)) {
     return res.status(400).json({ error: 'Invalid mode' });
   }
-
   try {
     const users = await getUsersByRole(mode);
     res.json(users);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch available users' });
+  }
+}
+
+export function getCurrentUser(req, res) {
+  const userData = getCurrentUserData(req.user);
+  res.json(userData);
+}
+
+export async function loginUserTo(req, res) {
+  try {
+    const { name, password } = req.body;
+    const user = await loginUser(name, password);
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid username or password' });
+    }
+    const token = generateToken(user);
+    const { password_hash, ...safeUser } = user;
+    await updateOnlineStatus(safeUser.id, true);
+
+    const io = req.app.get('io');
+    io.emit('user_status_change', { userId: safeUser.id, isOnline: true });
+
+    res
+      .cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 3600000,
+      })
+      .json({
+        user: { id: safeUser.id, role: safeUser.role, user_name: safeUser.user_name }
+      });
+  } catch (error) {
+    console.error('Error in loginUserTo:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -45,9 +67,9 @@ export const addUserTo = async (req, res) => {
     res
       .cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // ב־localhost זה false
-        sameSite: 'lax', // לא strict, כדי שיעבוד ב־localhost
-        maxAge: 3600000, // שעה
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 3600000,
       })
       .status(201)
       .json({ id: newUserId, role });
@@ -57,31 +79,6 @@ export const addUserTo = async (req, res) => {
     res.status(500).json({ message: 'Error adding user' });
   }
 };
-
-export async function loginUserTo(req, res) {
-  const { name, password } = req.body;
-  const user = await loginUser(name, password);
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid username or password' });
-  }
-  const token = generateToken(user);
-  const { password_hash, ...safeUser } = user;
-  await updateOnlineStatus(safeUser.id, true);
-
-  const io = req.app.get('io');
-  io.emit('user_status_change', { userId: safeUser.id, isOnline: true });
-
-  res
-    .cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 3600000,
-    })
-    .json({
-      user: { id: safeUser.id, role: safeUser.role, user_name: safeUser.user_name }
-    });
-}
 
 export async function createBereavedProfile(req, res) {
   try {
@@ -114,7 +111,6 @@ export async function createSupporterProfile(req, res) {
   }
 }
 
-
 export const logoutUser = async (req, res) => {
   try {
     performLogout(res);
@@ -129,3 +125,18 @@ export const logoutUser = async (req, res) => {
     res.status(500).json({ message: 'Error logging out' });
   }
 };
+
+export async function checkUserExistence(req, res) {
+  const { username, email } = req.body;
+  try {
+    const result = await checkUserExistenceService(username, email);
+    res.json(result);
+  } catch (error) {
+    console.error('Error checking existence:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+
+

@@ -40,11 +40,10 @@ export default function ChatWindow() {
         'start_chat',
         {
           otherUserId: parseInt(otherUserId),
-          isAnonymous: mode === 'anonymous'
         },
         async (res) => {
           if (res.error) {
-            console.error('Failed to start chat:', res.error);
+            toast.error('נכשל בהתחלת שיחה:', res.error);
             return;
           }
           const sessionId = res.sessionId;

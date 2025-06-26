@@ -1,11 +1,20 @@
 import db from '../../DB/dbConnection.js';
 import { v4 as uuidv4 } from 'uuid';
 
+export async function isUserInChat(sessionId, userId) {
+  const [sessions] = await db.query(`
+    SELECT * FROM chat_sessions 
+    WHERE id = ? AND (user1_id = ? OR user2_id = ?)
+  `, [sessionId, userId, userId]);
+
+  return sessions.length > 0;
+}
+
 export async function updateOnlineStatus(userId, isOnline) {
   await db.query(`UPDATE users SET is_online = ? WHERE id = ?`, [isOnline, userId]);
 }
 
-export async function getOrCreateSession(user1Id, user2Id, isAnonymous) {
+export async function getOrCreateSession(user1Id, user2Id) {
   if (user1Id === user2Id) {
     throw new Error("Can't start a chat with yourself");
   }
@@ -24,9 +33,9 @@ export async function getOrCreateSession(user1Id, user2Id, isAnonymous) {
 
   const id = uuidv4();
   await db.query(`
-    INSERT INTO chat_sessions (id, user1_id, user2_id, is_anonymous)
-    VALUES (?, ?, ?, ?)
-  `, [id, user1Id, user2Id, isAnonymous]);
+    INSERT INTO chat_sessions (id, user1_id, user2_id)
+    VALUES (?, ?, ?)
+  `, [id, user1Id, user2Id]);
 
   return id;
 }
@@ -40,14 +49,6 @@ export async function saveMessageToDB(sessionId, senderId, message) {
   return result.insertId;
 }
 
-export async function isUserInChat(sessionId, userId) {
-  const [sessions] = await db.query(`
-    SELECT * FROM chat_sessions 
-    WHERE id = ? AND (user1_id = ? OR user2_id = ?)
-  `, [sessionId, userId, userId]);
-
-  return sessions.length > 0;
-}
 
 export async function savePendingMessageIfNeeded(socket, sessionId, message, io) {
   try {

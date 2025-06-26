@@ -1,5 +1,4 @@
 
-
 import { Component } from 'react';
 
 const SERVER_URL = 'http://localhost:3000/';
@@ -92,7 +91,6 @@ class APIRequests extends Component {
 
     return data;
 }
-
 
     static async patchRequest(restUrl, fieldsToUpdate) {
         const response = await fetch(`${SERVER_URL}${restUrl}`, {

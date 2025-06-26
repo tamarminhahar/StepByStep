@@ -16,7 +16,6 @@ export function trackUserSocket(socket) {
   });
 }
 
-// שליחת נוטיפיקציה פרטית למשתמש
 export function sendNotificationToUser(io, userId, notification) {
   const socketId = userSockets.get(userId);
   if (socketId) {

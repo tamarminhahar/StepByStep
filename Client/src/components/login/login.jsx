@@ -42,7 +42,6 @@ export default function Login() {
             navigate('/home');
 
         } catch (err) {
-            console.error(err);
             toast.error('שם משתמש או סיסמה שגויים, נסה שוב');
         }
     };

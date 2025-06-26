@@ -35,7 +35,6 @@ async function initDatabase() {
 
   await db.query(`SET FOREIGN_KEY_CHECKS = 1;`);
 
-
   await db.query(`
     CREATE TABLE users (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -83,14 +82,15 @@ async function initDatabase() {
       body TEXT NOT NULL,
       media_url VARCHAR(500),
       post_type ENUM('שאלה', 'זיכרון', 'טיפ', 'שיתוף', 'המלצה', 'אחר') NOT NULL,
-      poster_status_type ENUM('bereaved', 'supporter') NOT NULL,      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      poster_status_type ENUM('bereaved', 'supporter') NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     );
 
     CREATE TABLE likes (
       id INT AUTO_INCREMENT PRIMARY KEY,
       user_id INT NOT NULL,
       post_id INT NOT NULL,
-     UNIQUE (user_id, post_id),
+      UNIQUE (user_id, post_id),
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
     );
@@ -119,7 +119,7 @@ async function initDatabase() {
     color VARCHAR(20) ,
     apply_to_all BOOLEAN DEFAULT FALSE,
     locked BOOLEAN DEFAULT FALSE, 
-     participation_status ENUM('confirmed', 'declined') DEFAULT NULL,
+    participation_status ENUM('confirmed', 'declined') DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_supporter_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -136,7 +136,7 @@ CREATE TABLE event_participation (
 CREATE TABLE notifications (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
- type VARCHAR(30) NOT NULL,
+  type VARCHAR(30) NOT NULL,
   message TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   target_url VARCHAR(255),
@@ -177,32 +177,25 @@ CREATE TABLE pending_messages (
   FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
--- אינדקסים לטבלת chat_sessions
+
 CREATE INDEX idx_user1 ON chat_sessions(user1_id);
 CREATE INDEX idx_user2 ON chat_sessions(user2_id);
 
--- אינדקסים לטבלת chat_messages
 CREATE INDEX idx_session_id ON chat_messages(session_id);
 CREATE INDEX idx_seen_at ON chat_messages(seen_at);
 
--- אינדקסים לטבלת pending_messages
 CREATE INDEX idx_receiver_id ON pending_messages(receiver_id);
 CREATE INDEX idx_is_read ON pending_messages(is_read);
 
--- אינדקסים לטבלת users
 CREATE UNIQUE INDEX idx_username ON users(user_name);
 CREATE UNIQUE INDEX idx_email ON users(email);
 
--- אינדקסים לטבלת posts
 CREATE INDEX idx_user_id ON posts(user_id);
 CREATE INDEX idx_post_type ON posts(post_type);
 
--- אינדקסים לטבלת likes
 CREATE INDEX idx_post_likes ON likes(post_id);
 
--- אינדקסים לטבלת comments
 CREATE INDEX idx_post_comments ON comments(post_id);
-
   `);
 
   console.log('Tables created!');

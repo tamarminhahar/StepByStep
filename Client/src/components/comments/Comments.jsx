@@ -28,7 +28,6 @@ export default function Comments({ postId }) {
             setComments(data);
         } catch (err) {
             toast.error(err.message);
-            console.error(err);
         } finally {
             setLoading(false);
         }
@@ -56,7 +55,6 @@ export default function Comments({ postId }) {
             await fetchComments();
         } catch (err) {
             toast.error(err.message);
-            console.error(err);
         } finally {
             setAddingComment(false);
         }
@@ -68,7 +66,6 @@ export default function Comments({ postId }) {
             toast.success('התגובה נמחקה');
         } catch (err) {
             toast.error(err.message || 'שגיאה לא צפויה במחיקה');
-            console.error(err);
         } finally {
             await fetchComments();
         }

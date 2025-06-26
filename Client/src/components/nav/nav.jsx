@@ -11,7 +11,7 @@ function Nav() {
     await APIRequests.postRequest("users/logout");
     navigate("/login");
   } catch (error) {
-    console.error("שגיאה ביציאה:", error.message);
+    toast.error("שגיאה ביציאה:", error.message);
   }
 };
 

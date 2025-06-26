@@ -1,7 +1,6 @@
-// Routes/chatRoutes.js
 import express from 'express';
 import * as chatController from '../Controllers/Chat.js'; 
-import { authenticateJWT } from '../Middlewares/authenticateJWT.js'; // להוסיף ייבוא
+import { authenticateJWT } from '../Middlewares/authenticateJWT.js'; 
 
 const router = express.Router();
 router.use(authenticateJWT);

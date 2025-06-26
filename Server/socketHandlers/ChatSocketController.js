@@ -1,6 +1,4 @@
-import { createNotification } from '../Services/Notification.js';
 import { updateOnlineStatus, getOrCreateSession, saveMessageToDB, savePendingMessageIfNeeded } from '../Services/Chat.js';
-import { sendNotificationToUser } from './NotificationSocketController.js';
 import db from '../../DB/dbConnection.js';
 const userSockets = new Map();
 const userCurrentSessions = new Map();
@@ -25,9 +23,9 @@ export async function handleSocketConnection(io, socket) {
     userCurrentSessions.delete(socket.userId);
   });
 
-  socket.on('start_chat', async ({ otherUserId, isAnonymous }, callback) => {
+  socket.on('start_chat', async ({ otherUserId }, callback) => {
     try {
-      const sessionId = await getOrCreateSession(socket.userId, otherUserId, isAnonymous);
+      const sessionId = await getOrCreateSession(socket.userId, otherUserId);
       socket.join(sessionId);
       const [historyRows] = await db.query(`
   SELECT id, sender_id AS senderId, message, seen_at AS seenAt, is_deleted AS isDeleted
@@ -65,14 +63,7 @@ export async function handleSocketConnection(io, socket) {
     const isInSameChat = activeSession === sessionId;
     if (!isOnline || !isInSameChat) {
       const [user] = await db.query(`SELECT user_name FROM users WHERE id = ?`, [socket.userId]);
-      const senderName = user[0]?.user_name || 'משתמש';
-      await createNotification({
-        user_id: recipientId,
-        type: 'new_chat_message',
-        message: `${senderName} שלח/ה לך הודעה חדשה בצ'אט`,
-        target_url: `/chat/session/${senderName}`
-      });
-      sendNotificationToUser(io, recipientId);
+      const senderName = user[0]?.user_name;
     }
     const payload = {
       id: messageId,
@@ -83,7 +74,7 @@ export async function handleSocketConnection(io, socket) {
       seenAt: null
     };
     io.to(sessionId).emit('receive_message', payload);
-    socket.emit('receive_message', payload); // שליחה ישירה לשולח
+    socket.emit('receive_message', payload); 
   });
 
   socket.on('register user', () => {
