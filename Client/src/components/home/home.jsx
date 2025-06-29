@@ -1,21 +1,26 @@
-import React, { useState } from "react";
+
+import React from "react";
 import Nav from "../nav/Nav";
-import { useCurrentUser } from "../hooks/useCurrentUser"; // ודא נתיב נכון
-import NotificationPanel from "../notification/NotificationPanel";import ChatWindow from '../chat/ChatWindow'; // ודא נתיב
-import styles from './Home.module.css'; // ייבוא מודול CSS
+import { useCurrentUser } from "../hooks/useCurrentUser"
+import { useNavigate } from "react-router-dom";
+import styles from './homeStyle/Home.module.css';
 
 export default function Home() {
   const { currentUser } = useCurrentUser();
-
-  const dummyOtherUserId = 2;
-  const mode = currentUser?.role === 'supporter' ? 'bereaved' : 'supporter';
+  const navigate = useNavigate();
 
   return (
-<div className="pageWrapper">
+    <div className={styles.pageWrapper}>
       <Nav />
-      {/* <h1>ברוך הבא { currentUser.user_name }</h1> */}
-      <NotificationPanel/>
 
-</div>
+      <div className={styles.homeContainer}>
+        <h1 className={styles.title}>ברוך/ה הבא/ה {currentUser?.user_name} </h1>
+        <p className={styles.description}>
+          כאן זה המקום לשתף, להרגיש, לתמוך ולהיתמך.  
+          יחד אנחנו יוצרים קהילה אמיצה ומחבקת, שמבינה אותך.
+        </p>
+
+      </div>
+    </div>
   );
 }

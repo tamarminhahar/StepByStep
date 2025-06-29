@@ -1,4 +1,4 @@
-.container {
+/* .container {
   padding: 40px;
   text-align: center;
 }
@@ -36,4 +36,54 @@
   width: 60px;
   height: 60px;
   margin-bottom: 15px;
+} */
+
+.container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+}
+
+.title {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.cardContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.card {
+  flex: 1 1 200px;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  background-color: #e1f4f0;
+}
+@media (max-width: 600px) {
+  .chatContainer,
+  .chatListContainer,
+  .container {
+    padding: 1rem;
+  }
+
+  .messageBubble {
+    max-width: 90%;
+  }
+
+  .cardContainer {
+    flex-direction: column;
+  }
 }

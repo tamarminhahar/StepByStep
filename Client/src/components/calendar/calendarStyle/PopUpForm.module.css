@@ -1,26 +1,4 @@
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* רקע שחור שקוף */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-.modalContent {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-
+/* 
 .fc,
 .fc-view,
 .fc-view-harness,
@@ -32,14 +10,13 @@
 .calendarPageContainer {
   position: relative;
   padding: 20px;
-  z-index: 1; /* בסיסי, כדי שלא יכסה פופאפ */
+  z-index: 1; 
 }
 
 .calendarWrapper {
   position: relative;
-  z-index: 1; /* כדי שהלוח עצמו לא "ידחף" מעל הפופאפ */
+  z-index: 1;
 }
-
 
 .modalOverlay {
   position: fixed;
@@ -51,7 +28,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 5000; /* ✅ מעל FullCalendar */
+  z-index: 5000; 
 }
 
 
@@ -66,25 +43,16 @@
   overflow-y: auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   font-family: sans-serif;
-  position: relative; /* ✅ מוודא שמעל אלמנטים אחרים */
-  z-index: 6000;       /* ✅ גם כאן ליתר ביטחון */
+  position: relative; 
+  z-index: 6000;     
 }
 .formContent label {
   font-weight: bold;
   margin-top: 10px;
   display: block;
-  color: #333; /* ✅ צבע כהה ללייבלים */
+  color: #333; 
 }
 
-.closeButton {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
 
 .actions {
   margin-top: 1.5rem;
@@ -97,7 +65,6 @@
   margin-inline-end: 0.5rem;
 }
 
-/* ✅ תוספת לעיצוב טופס */
 .formContent label {
   font-weight: bold;
   margin-top: 10px;
@@ -115,4 +82,73 @@
   border-radius: 8px;
   font-size: 14px;
   box-sizing: border-box;
+} */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 150px;
+  /* background: rgba(0,0,0,0.4); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  font-family: 'Nunito', sans-serif;
+  
+}
+
+.modalContent {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.participationButtons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.participationButtons button {
+  background-color: #AEE1D4;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.participationButtons button:hover {
+  background-color: #98d4c4;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.actions button {
+  background-color: #f4c7c3;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.actions button:hover {
+  background-color: #eba7a3;
 }

@@ -1,193 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
+
 .postContainer {
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 20px;
-    background-color: #222;
-    color: #eee;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: box-shadow 0.3s ease;
+  background: #fff;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: 'Nunito', sans-serif;
+  transition: transform 0.2s ease;
+  margin: 5%;
 }
 
 .postContainer:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
 }
 
 .postHeader {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-    color: #aaa;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
 }
 
+.postTypeTag {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.type-question { background-color: #f4c7c3; }
+.type-share { background-color: #AEE1D4; }
+.type-tip { background-color: #fce7b3; }
+.type-memory { background-color: #a0d2eb; }
+.type-recommendation { background-color: #c3e8d5; }
+.type-other { background-color: #ccc; }
+
 .postTitle {
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin: 10px 0;
+  margin: 0.5rem 0;
+  color: #333;
 }
 
 .postBody {
-    font-size: 1.1rem;
-    line-height: 1.5;
-    margin-bottom: 10px;
+  margin: 0.5rem 0;
 }
 
-.griefTag {
-    font-style: italic;
-    margin-bottom: 10px;
-    color: #bbb;
+.mediaContent {
+  margin: 1rem 0;
+  text-align: center;
 }
+.mediaImage {
+    width: 100px;
+    height: auto;
+    display: block;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
 
 .likesSection {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .likesSection button {
-    background-color: transparent;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.likesSection button:hover {
-    transform: scale(1.2);
-}
-
-.mediaLink {
-    margin-bottom: 10px;
-}
-
-.mediaLink a {
-    color: #4fa3ff;
-    text-decoration: underline;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .actions {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .actions button {
-    background-color: #333;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    color: #fff;
-    transition: background-color 0.2s ease;
+  background-color: #AEE1D4;
+  color: #333;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .actions button:hover {
-    background-color: #555;
+  background-color: #98d4c4;
 }
 
-.commentsSection {
-    margin-top: 10px;
+.postMeta {
+  margin-top: 1rem;
+  text-align: center;
 }
 
-.commentToggleButton {
-    background-color: #007bff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    margin-bottom: 10px;
+.toggleCommentsButton {
+  background: none;
+  border: none;
+  color: #88A9C3;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
-.commentToggleButton:hover {
-    background-color: #0056b3;
+.postContainer select {
+  padding: 0.6rem;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-family: 'Nunito', sans-serif;
+  background-color: #fce7e7;
+  color: #333;
 }
 
-.commentInput {
-    width: 100%;
-    padding: 6px 10px;
-    margin-bottom: 8px;
-    border: 1px solid #555;
-    border-radius: 4px;
-    background-color: #333;
-    color: white;
+.postContainer select:focus {
+  border-color: #a0d2eb;
+  outline: none;
 }
 
-.commentButton {
-    background-color: #28a745;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
+@media (max-width: 600px) {
+  .postContainer {
+    padding: 1rem;
+  }
 }
-
-.commentButton:hover {
-    background-color: #218838;
-}
-.mediaContent {
-    margin-top: 10px;
-    text-align: center;
-}
-
-.mediaImage {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.mediaVideo {
-    max-width: 100%;
-    border-radius: 8px;
-}
-.editActions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-}
-.editActions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.warningText {
-    color: red;
-    font-weight: bold;
-    margin-top: 5px;
-}
-/* תגית לסוג פוסט */
-.postTypeTag {
-    display: inline-block;
-    color: #fff;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: bold;
-    margin-bottom: 6px;
-    font-size: 0.9rem;
-}
-
-/* צבעים לפי סוגים */
-.type-question {
-    background-color: #F9A825;
-}
-.type-share {
-    background-color: #2196F3;
-}
-.type-tip {
-    background-color: #4CAF50;
-}
-.type-memory {
-    background-color: #9C27B0;
-}
-.type-recommendation {
-    background-color: #FF5722;
-}
-.type-other {
-    background-color: #9E9E9E;
-}
-

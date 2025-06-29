@@ -1,7 +1,5 @@
-// Server/socketHandlers/NotificationSocketController.js
-// import * as notificationService from '../Services/Notification.js';
 
-const userSockets = new Map(); // ניהול מיפוי משתמשים מחוברים
+const userSockets = new Map();
 
 export function trackUserSocket(socket) {
   socket.on('user_connected', ({ userId }) => {

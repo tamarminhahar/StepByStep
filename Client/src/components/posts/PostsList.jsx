@@ -50,14 +50,14 @@ const PostsList = () => {
             setPostsLoading(false);
         }
     };
-const refreshSinglePost = (partialUpdate) => {
-    setPosts((prev) =>
-        prev.map((post) => {
-            if (post.id !== partialUpdate.id) return post;
-            return { ...post, ...partialUpdate };
-        })
-    );
-};
+    const refreshSinglePost = (partialUpdate) => {
+        setPosts((prev) =>
+            prev.map((post) => {
+                if (post.id !== partialUpdate.id) return post;
+                return { ...post, ...partialUpdate };
+            })
+        );
+    };
 
     const handleDeletePost = (id) => {
         setPosts((prev) => prev.filter((post) => post.id !== id));
@@ -139,9 +139,9 @@ const refreshSinglePost = (partialUpdate) => {
             if (sortCriteria === "popular") return (b.likes_count || 0) - (a.likes_count || 0);
             return 0;
         });
-useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}, [filterPostType, filterMyPosts, sortCriteria]);
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [filterPostType, filterMyPosts, sortCriteria]);
 
     if (loading) return <p>Loading user...</p>;
     if (!currentUser) return <p>You must be logged in.</p>;
@@ -152,17 +152,17 @@ useEffect(() => {
         <>
             <Nav />
             <div>
-                <h2>פוסטים</h2>
-                <div>
-                    <button onClick={() => navigate('/posts/new')}>הוסף פוסט</button>
-
+                <div className={styles.postBContainer}>
+                    <h2>פוסטים</h2>
+                    <div>
+                        <button onClick={() => navigate('/posts/new')}>הוסף פוסט</button>
+                    </div>
                     {showAddModal && (
                         <PostModal
                             onSave={postToEdit ? handleUpdatePost : handleAddPost}
                             initialPost={postToEdit}
                         />
                     )}
-
                     <label>
                         סינון לפי סוג פוסט:
                         <select value={filterPostType} onChange={(e) => setFilterPostType(e.target.value)}>
@@ -176,18 +176,19 @@ useEffect(() => {
                         </select>
                     </label>
 
-                    <button onClick={() => setFilterMyPosts((prev) => !prev)}>
-                        {filterMyPosts ? "כל הפוסטים" : "הפוסטים שלי"}
-                    </button>
-
                     <label>
-                        מיון:
+                        <div>
+                            מיון:
+                        </div>
                         <select value={sortCriteria} onChange={(e) => setSortCriteria(e.target.value)}>
                             <option value="newest">הכי חדש</option>
                             <option value="oldest">הכי ישן</option>
                             <option value="popular">פופולרי</option>
                         </select>
                     </label>
+                    <button onClick={() => setFilterMyPosts((prev) => !prev)}>
+                        {filterMyPosts ? "כל הפוסטים" : "הפוסטים שלי"}
+                    </button>
                 </div>
 
                 {filteredAndSortedPosts.length === 0 ? (

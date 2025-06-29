@@ -61,18 +61,7 @@ export default function ChatList() {
       }
     });
   };
-// useEffect(() => {
-//   socket.on('user_status_change', ({ userId, isOnline }) => {
-//     setUsers((prevUsers) =>
-//       prevUsers.map((user) =>
-//         user.id === userId ? { ...user, is_online: isOnline } : user
-//       )
-//     );
-//   });
-//   return () => {
-//     socket.off('user_status_change');
-//   };
-// }, []);
+
 useEffect(() => {
     socket.on('user_status_change', ({ userId, isOnline }) => {
         setUsers(prev =>
@@ -96,22 +85,7 @@ useEffect(() => {
   return (
     <div className={styles.chatListContainer}>
       <Nav />
-      {/* <div className={styles.modeSelector}>
-        <button
-          className={styles.modeButton}
-          onClick={() => setMode('supporter')}
-          style={{ opacity: mode === 'supporter' ? 1 : 0.6 }}
-        >
-          שיחה עם תומך
-        </button>
-        <button
-          className={styles.modeButton}
-          onClick={() => setMode('bereaved')}
-          style={{ opacity: mode === 'bereaved' ? 1 : 0.6 }}
-        >
-          שיחה עם אבל
-        </button>
-      </div> */}
+ 
 {currentUser.role !== 'supporter' && (
   <div className={styles.modeSelector}>
     <button

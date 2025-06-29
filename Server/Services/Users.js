@@ -51,7 +51,6 @@ export async function addUser(userData) {
             INSERT INTO users (user_name, email, role)
             VALUES (?, ?, ?)
         `, [name, email, role]);
-
     const newUserId = result.insertId;
     await db.execute(`
             INSERT INTO passwords (user_id, password_hash)

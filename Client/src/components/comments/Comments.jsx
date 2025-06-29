@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import styles from './Comments.module.css';
+import styles from './commentsStyle/Comments.module.css';
 import { useCurrentUser } from '../hooks/useCurrentUser';
 import { toast } from 'react-toastify';
 import { z } from 'zod';

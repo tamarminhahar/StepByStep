@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import styles from './login.module.css';
+import styles from './loginStyle/login.module.css';
 import { useNavigate, Link } from 'react-router-dom';
 import ApiClientRequests from '../../services/ApiClientRequests'
 import { toast } from 'react-toastify';
@@ -16,7 +16,6 @@ export default function Login() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ name: '', password: '' });
     const [errors, setErrors] = useState({});
-
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };

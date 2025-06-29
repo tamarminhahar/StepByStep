@@ -1,0 +1,255 @@
+/* .commentsContainer {
+    border-top: 1px solid #ddd;
+    padding-top: 16px;
+    margin-top: 16px;
+    background-color: #fff;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+.commentsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.commentsList {
+    margin-bottom: 16px;
+}
+
+.commentItem {
+    padding: 12px;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.commentContent {
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+.commentMeta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.noComments {
+    font-style: italic;
+    color: #777;
+}
+
+.addCommentSection {
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+}
+
+.addCommentInput {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.addCommentActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.addCommentButton {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.addCommentButton:hover {
+    background-color: #084298;
+}
+
+.cancelCommentButton {
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.cancelCommentButton:hover {
+    background-color: #e9e9e9;
+}
+.addCommentSection {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
+
+.commentsContainer {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: 'Nunito', sans-serif;
+  margin-top: 1rem;
+}
+
+.commentsHeader {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.commentItem {
+  background-color: #f9fbfc;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+.commentContent {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.commentMeta {
+  font-size: 0.85rem;
+  color: #777;
+  display: flex;
+  justify-content: space-between;
+}
+
+.deleteCommentButton {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.noComments {
+  text-align: center;
+  color: #777;
+}
+
+.addCommentToggleButton {
+  background-color: #AEE1D4;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.addCommentToggleButton:hover {
+  background-color: #98d4c4;
+}
+
+.addCommentSection {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.addCommentInput {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #fff;
+  font-family: 'Nunito', sans-serif;
+  resize: vertical;
+}
+
+.addCommentInput:focus {
+  border-color: #a0d2eb;
+  outline: none;
+}
+
+.addCommentActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.addCommentButton {
+  background-color: #AEE1D4;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.addCommentButton:hover {
+  background-color: #98d4c4;
+}
+
+.cancelCommentButton {
+  background-color: #f4c7c3;
+  color: #333;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.cancelCommentButton:hover {
+  background-color: #eba7a3;
+}
+
+@media (max-width: 600px) {
+  .addCommentActions {
+    flex-direction: column;
+  }
+
+  .addCommentButton,
+  .cancelCommentButton {
+    width: 100%;
+  }
+}

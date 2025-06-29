@@ -21,7 +21,7 @@ export async function getPendingMessages(req, res) {
     const messages = await fetchPendingMessages(req.user.id);
     res.json(messages);
   } catch (err) {
-    console.error('❌ Failed to fetch pending messages:', err);
+    console.error(' Failed to fetch pending messages:', err);
     res.status(500).json({ error: 'Failed to load pending messages' });
   }
 }
@@ -50,7 +50,7 @@ export async function sendMessageToSession(req, res) {
     await savePendingMessageIfNeeded({ userId: req.user.id }, sessionId, message); // socket mock
     res.json({ success: true });
   } catch (err) {
-    console.error('❌ sendMessageToSession error:', err.message);
+    console.error(' sendMessageToSession error:', err.message);
     res.status(500).json({ error: 'Failed to send message' });
   }
 }

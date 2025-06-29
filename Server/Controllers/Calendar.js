@@ -148,7 +148,7 @@ export async function updateParticipation(req, res) {
 
     const alreadyParticipated = await calendarService.hasUserParticipated(event.id, user.id);
     if (alreadyParticipated) {
-        return res.status(400).json({ error: 'You have already responded to this event' });
+        return res.status(400).json({ error: 'כבר הגבתה לאירוע זה ' });
     }
 
     await calendarService.addParticipant(event.id, user.id);

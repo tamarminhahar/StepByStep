@@ -1,6 +1,6 @@
 
 import { useNavigate } from 'react-router-dom';
-import styles from './nav.module.css';
+import styles from './navStyle/nav.module.css';
 import APIRequests from "../../services/ApiClientRequests";
 
 function Nav() {

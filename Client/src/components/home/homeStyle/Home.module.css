@@ -1,0 +1,98 @@
+/* 
+.chatToggleBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 999;
+}
+
+.chatPopupBox {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 300px;
+  max-height: 400px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  z-index: 998;
+  overflow: hidden;
+}
+.pageWrapper {
+  padding-top: 60px; 
+}
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
+
+.pageWrapper {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Nunito', sans-serif;
+  background-color: #f9fbfc;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+} */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f9fb;
+  font-family: 'Nunito', sans-serif;
+}
+
+.homeContainer {
+  max-width: 600px;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.title {
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.actionButton {
+  background-color: #AEE1D4;
+  color: #333;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.actionButton:hover {
+  background-color: #98d4c4;
+}
+
+@media (max-width: 600px) {
+  .homeContainer {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}

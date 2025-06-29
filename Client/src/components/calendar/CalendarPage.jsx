@@ -114,8 +114,6 @@ function CalendarPage() {
         />
       </div>
 
-      {/* כאן רק את החלק הזה להחליף */}
-
       {location.pathname === "/calendar/new" && (
         <PopUpForm
           selectedDate={selectedDate}

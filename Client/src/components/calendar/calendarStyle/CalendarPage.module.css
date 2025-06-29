@@ -1,4 +1,4 @@
-.calendarWrapper {
+/* .calendarWrapper {
   padding: 2rem;
   max-width: 1000px;
   margin: 0 auto;
@@ -46,4 +46,132 @@
 
 .fc-day-today {
   background-color: #e1f5ff;
+} */
+/* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
+
+.calendarPageContainer {
+  padding: 1rem;
+  background-color: #f5f9fb;
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+}
+
+.calendarWrapper {
+  max-width: 1000px;
+  margin: 2rem auto;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+} */
+ @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap');
+
+.calendarPageContainer {
+  padding: 1rem;
+  background-color: #f5f9fb;
+  min-height: 100vh;
+  font-family: 'Nunito', sans-serif;
+}
+
+.calendarWrapper {
+  max-width: 1000px;
+  margin: 2rem auto;
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* עיצוב ללוח השנה */
+.fc {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 1rem;
+  font-family: 'Nunito', sans-serif;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fc-toolbar-chunk {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* עיצוב כללי לכפתורים בלוח השנה */
+.fc-button,
+.fc-button-primary {
+  background-color: #AEE1D4 !important;
+  border: none !important;
+  color: #333 !important;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px !important;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.fc-button:hover,
+.fc-button-primary:hover {
+  background-color: #98d4c4 !important;
+}
+
+.fc-button-primary:disabled {
+  background-color: #d3e8e3 !important;
+  color: #aaa !important;
+}
+
+/* כפתורי החיצים למעבר חודשים/שנים */
+.fc .fc-button-group .fc-prev-button,
+.fc .fc-button-group .fc-next-button {
+  background-color: #AEE1D4 !important;
+  border: none !important;
+  color: #333 !important;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px !important;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.fc .fc-button-group .fc-prev-button:hover,
+.fc .fc-button-group .fc-next-button:hover {
+  background-color: #98d4c4 !important;
+}
+
+/* כפתור היום */
+.fc .fc-today-button {
+  background-color: #AEE1D4 !important;
+  border: none !important;
+  color: #333 !important;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px !important;
+  font-family: 'Nunito', sans-serif;
+  transition: background-color 0.3s ease;
+}
+
+.fc .fc-today-button:hover {
+  background-color: #98d4c4 !important;
+}
+
+/* עיצוב האירועים עצמם */
+.fc-daygrid-event {
+  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 2px 6px;
+  background-color: #AEE1D4;
+  color: #333;
+  border: none;
+  cursor: pointer;
+}
+
+.fc-daygrid-event:hover {
+  background-color: #98d4c4;
 }

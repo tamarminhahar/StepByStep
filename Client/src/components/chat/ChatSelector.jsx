@@ -13,25 +13,8 @@ export default function ChatSelector() {
   };
   if (!currentUser) return null;
 
-  // return (
-  //   <div className={styles.container}>
-  //     <Nav />
-  //     <h2 className={styles.title}>עם מי תרצה/י לשוחח?</h2>
 
-  //     <div className={styles.cardContainer}>
-  //       <div className={styles.card} onClick={() => handleModeSelect('supporter')}>
-  //         <h3>תומך</h3>
-  //         <p>קבל תמיכה רגשית ממי שמבין אותך</p>
-  //       </div>
-
-  //       <div className={styles.card} onClick={() => handleModeSelect('bereaved')}>
-  //         <h3>אבל אחר</h3>
-  //         <p>שוחח עם מישהו שחווה אובדן דומה</p>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
- return (
+  return (
     <div className={styles.container}>
       <Nav />
       <h2 className={styles.title}>עם מי תרצה/י לשוחח?</h2>

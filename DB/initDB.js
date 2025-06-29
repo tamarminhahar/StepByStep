@@ -133,6 +133,7 @@ CREATE TABLE event_participation (
   FOREIGN KEY (event_id) REFERENCES calendar_events(id) ON DELETE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 CREATE TABLE notifications (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
@@ -143,6 +144,7 @@ CREATE TABLE notifications (
   is_read BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 CREATE TABLE chat_sessions (
   id VARCHAR(255) PRIMARY KEY,
   user1_id INT NOT NULL,

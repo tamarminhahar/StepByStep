@@ -81,33 +81,16 @@ export async function handleSocketConnection(io, socket) {
     userSockets.set(socket.userId, socket.id);
   });
 
-  // socket.on('message seen', async ({ messageId }) => {
-  //   try {
-  //     await db.query(`UPDATE chat_messages SET seen_at = NOW() WHERE id = ?`, [messageId]);
 
-  //     await db.query(`
-  //     DELETE FROM pending_messages 
-  //     WHERE message = (SELECT message FROM chat_messages WHERE id = ?) 
-  //     AND receiver_id = ?
-  //   `, [messageId, socket.userId]);
-  //     io.emit('message seen confirmation', { messageId });
-  //   } catch (err) {
-  //     console.error(' Failed to update seen_at or delete pending message:', err);
-  //   }
-  // });
 socket.on('message seen', async ({ messageId }) => {
   try {
-    // עדכון השדה seen_at בבסיס הנתונים
     await db.query(`UPDATE chat_messages SET seen_at = NOW() WHERE id = ?`, [messageId]);
-
-    // מחיקת ההודעה מרשימת הודעות ממתינות אם קיימת
     await db.query(`
       DELETE FROM pending_messages 
       WHERE message = (SELECT message FROM chat_messages WHERE id = ?) 
       AND receiver_id = ?
     `, [messageId, socket.userId]);
 
-    // שליפת שני המשתמשים מהשיחה לפי messageId
     const [sessionRows] = await db.query(`
       SELECT cs.user1_id, cs.user2_id 
       FROM chat_sessions cs
@@ -121,7 +104,6 @@ socket.on('message seen', async ({ messageId }) => {
     const recipient1 = session.user1_id;
     const recipient2 = session.user2_id;
 
-    // שליחה של אישור ראיה רק לשני המשתמשים הרלוונטיים
     [recipient1, recipient2].forEach(userId => {
       const socketId = userSockets.get(userId);
       if (socketId) {

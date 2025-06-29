@@ -1,4 +1,4 @@
-.pendingContainer {
+/* .pendingContainer {
   background-color: #ffffff;
   border-radius: 12px;
   padding: 1.5rem;
@@ -60,4 +60,29 @@
   border-radius: 12px;
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+.badge {
+  background-color: #f4c7c3;
+  color: #333;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  text-align: center;
+  margin: 1rem auto;
+  max-width: 250px;
+  font-family: 'Nunito', sans-serif;
+}
+@media (max-width: 600px) {
+  .chatContainer,
+  .chatListContainer,
+  .container {
+    padding: 1rem;
+  }
+
+  .messageBubble {
+    max-width: 90%;
+  }
+
+  .cardContainer {
+    flex-direction: column;
+  }
 }
